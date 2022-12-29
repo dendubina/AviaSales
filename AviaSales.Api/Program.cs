@@ -1,9 +1,19 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using AviaSales.Api.Extensions;
+using AviaSales.Application;
+using AviaSales.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
+    .ConfigureContainer<ContainerBuilder>(containerBuilder =>
+    {
+        containerBuilder.RegisterModule(new InfrastructureModule());
+        containerBuilder.RegisterModule(new ApplicationModule());
+
+        containerBuilder.ConfigureMediatR();
+    });
 
 builder.Services.AddControllers();
 
