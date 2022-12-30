@@ -8,7 +8,6 @@ internal class LocationsConfig : IEntityTypeConfiguration<Location>
 {
     public void Configure(EntityTypeBuilder<Location> builder)
     {
-       // builder.HasIndex(x => x.Name).IsUnique();
         builder.Property(x => x.Name).IsRequired();
 
         builder.HasData(DataInitializer.Locations);

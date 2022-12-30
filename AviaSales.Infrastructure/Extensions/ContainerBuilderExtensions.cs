@@ -1,7 +1,9 @@
-﻿using Autofac;
+﻿using System.Data;
+using Autofac;
 using AviaSales.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 
 namespace AviaSales.Infrastructure.Extensions;
 
@@ -23,14 +25,19 @@ internal static class ContainerBuilderExtensions
                 optsBuilder.UseNpgsql(config.GetConnectionString("Postgres"),
                     opt => opt.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName))
                     .UseLowerCaseNamingConvention();
-
-                //optsBuilder.UseSqlServer(config.GetConnectionString("Mssql"),
-                //    opt => opt.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
             }
 
             return new AppDbContext(optsBuilder.Options);
         }).AsSelf().InstancePerLifetimeScope();
+    }
 
+    public static void ConfigureSqlConnection(this ContainerBuilder builder)
+    {
+        builder.Register(c =>
+        {
+            var connectionString = c.Resolve<IConfiguration>().GetConnectionString("Postgres");
 
+            return new NpgsqlConnection(connectionString);
+        }).As<IDbConnection>().SingleInstance();
     }
 }

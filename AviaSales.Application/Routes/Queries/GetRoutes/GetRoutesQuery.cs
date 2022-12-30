@@ -1,15 +1,14 @@
-﻿using AviaSales.Domain.Entities;
+﻿using AviaSales.Application.Routes.Dto;
 using MediatR;
 
-namespace AviaSales.Application.Routes.Queries.GetRoutes
-{
-    public class GetRoutesQuery : IRequest<IEnumerable<Route>>
-    {
-        private readonly RouteParameters _parameters;
+namespace AviaSales.Application.Routes.Queries.GetRoutes;
 
-        public GetRoutesQuery(RouteParameters parameters)
-        {
-            _parameters = parameters;
-        }
+public class GetRoutesQuery : IRequest<IEnumerable<GetRouteDto>>
+{
+    public RouteParameters Parameters { get; }
+
+    public GetRoutesQuery(RouteParameters parameters)
+    {
+        Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
     }
 }
