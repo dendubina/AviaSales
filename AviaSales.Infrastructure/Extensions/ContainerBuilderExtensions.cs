@@ -20,11 +20,16 @@ internal static class ContainerBuilderExtensions
             }
             else
             {
-                optsBuilder.UseNpgsql(config.GetConnectionString("Postgres"),
+                /* optsBuilder.UseNpgsql(config.GetConnectionString("Postgres"),
+                     opt => opt.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));*/
+
+                optsBuilder.UseSqlServer(config.GetConnectionString("Mssql"),
                     opt => opt.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
             }
 
             return new AppDbContext(optsBuilder.Options);
         }).AsSelf().InstancePerLifetimeScope();
+
+
     }
 }

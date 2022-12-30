@@ -3,6 +3,8 @@ using Autofac.Extensions.DependencyInjection;
 using AviaSales.Api.Extensions;
 using AviaSales.Application;
 using AviaSales.Infrastructure;
+using AviaSales.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,21 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
 
         containerBuilder.ConfigureMediatR();
     });
+
+builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 1;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+
+    options.User.RequireUniqueEmail = true;
+});
 
 builder.Services.AddControllers();
 
