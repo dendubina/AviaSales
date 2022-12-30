@@ -3,43 +3,44 @@ using System;
 using AviaSales.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace AviaSales.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221230000328_init")]
+    [Migration("20221230125812_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("public")
                 .HasAnnotation("ProductVersion", "6.0.12")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("AviaSales.Domain.Entities.Location", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_locations");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Locations");
+                    b.ToTable("locations", "public");
 
                     b.HasData(
                         new
@@ -548,18 +549,22 @@ namespace AviaSales.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("Model")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("model");
 
                     b.Property<int>("SeatsCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("seatscount");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_plane");
 
-                    b.ToTable("Plane");
+                    b.ToTable("plane", "public");
 
                     b.HasData(
                         new
@@ -624,76 +629,53 @@ namespace AviaSales.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AviaSales.Domain.Entities.Product", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Apple"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Banana"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Orange"
-                        });
-                });
-
             modelBuilder.Entity("AviaSales.Domain.Entities.Route", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("Arrival")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("arrival");
 
                     b.Property<DateTime>("Departure")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("departure");
 
                     b.Property<Guid>("FromId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("fromid");
 
                     b.Property<Guid>("PlaneId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("planeid");
 
                     b.Property<Guid>("ToId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("toid");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_routes");
 
-                    b.HasIndex("FromId");
+                    b.HasIndex("FromId")
+                        .HasDatabaseName("ix_routes_fromid");
 
-                    b.HasIndex("PlaneId");
+                    b.HasIndex("PlaneId")
+                        .HasDatabaseName("ix_routes_planeid");
 
-                    b.HasIndex("ToId");
+                    b.HasIndex("ToId")
+                        .HasDatabaseName("ix_routes_toid");
 
-                    b.ToTable("Routes");
+                    b.ToTable("routes", "public");
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("6a99c2b9-734c-4a9b-11d8-5b9b69712b73"),
-                            Arrival = new DateTime(2023, 1, 28, 11, 51, 58, 862, DateTimeKind.Local).AddTicks(5023),
-                            Departure = new DateTime(2023, 1, 28, 7, 58, 48, 496, DateTimeKind.Local).AddTicks(5711),
+                            Arrival = new DateTime(2023, 1, 29, 10, 41, 27, 731, DateTimeKind.Utc).AddTicks(4570),
+                            Departure = new DateTime(2023, 1, 28, 17, 53, 32, 930, DateTimeKind.Utc).AddTicks(9377),
                             FromId = new Guid("3c52929b-3de6-7026-c31d-7e095c625b2e"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("a46450b9-7d53-cbbc-b12a-5f40fe56fbf7")
@@ -701,8 +683,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("f0f445ef-56e3-44ee-dd55-f13862e447f5"),
-                            Arrival = new DateTime(2023, 1, 13, 23, 36, 0, 603, DateTimeKind.Local).AddTicks(6922),
-                            Departure = new DateTime(2023, 1, 13, 19, 43, 10, 256, DateTimeKind.Local).AddTicks(7617),
+                            Arrival = new DateTime(2023, 1, 14, 22, 25, 29, 472, DateTimeKind.Utc).AddTicks(7845),
+                            Departure = new DateTime(2023, 1, 14, 5, 37, 54, 691, DateTimeKind.Utc).AddTicks(3066),
                             FromId = new Guid("dd76a6ab-7b2e-419e-da37-05f3f12609c7"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("9056b5bc-f2fc-6ffa-f56a-f5701226825e")
@@ -710,8 +692,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("a1242af1-118c-5177-0898-f054dfca7ca5"),
-                            Arrival = new DateTime(2023, 1, 17, 14, 12, 34, 801, DateTimeKind.Local).AddTicks(5972),
-                            Departure = new DateTime(2023, 1, 17, 10, 58, 32, 363, DateTimeKind.Local).AddTicks(6102),
+                            Arrival = new DateTime(2023, 1, 18, 13, 2, 3, 670, DateTimeKind.Utc).AddTicks(6715),
+                            Departure = new DateTime(2023, 1, 17, 20, 53, 16, 798, DateTimeKind.Utc).AddTicks(1474),
                             FromId = new Guid("213608f2-53eb-fa3c-064a-26cd5eaaa713"),
                             PlaneId = new Guid("0aac9aea-970d-4c24-2c52-10626a95e60f"),
                             ToId = new Guid("8a4f5c9b-c14d-3923-110b-d614f8c180e7")
@@ -719,8 +701,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("626a8234-8d06-7de4-582c-1b4b41fd1ad0"),
-                            Arrival = new DateTime(2023, 1, 14, 16, 29, 16, 373, DateTimeKind.Local).AddTicks(8690),
-                            Departure = new DateTime(2023, 1, 14, 12, 39, 57, 200, DateTimeKind.Local).AddTicks(4965),
+                            Arrival = new DateTime(2023, 1, 15, 15, 18, 45, 242, DateTimeKind.Utc).AddTicks(9435),
+                            Departure = new DateTime(2023, 1, 14, 22, 34, 41, 635, DateTimeKind.Utc).AddTicks(337),
                             FromId = new Guid("ed22d346-e5cc-9759-1cce-2b19aa2f8e7e"),
                             PlaneId = new Guid("ccfcc9e2-5809-8aba-7fb8-87de374bd9ea"),
                             ToId = new Guid("d6228bf9-3a5c-8357-ab65-3bdc7306fd24")
@@ -728,8 +710,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("e400bdd4-1982-50ca-4607-f575f4bda7ba"),
-                            Arrival = new DateTime(2023, 1, 2, 12, 23, 33, 781, DateTimeKind.Local).AddTicks(2234),
-                            Departure = new DateTime(2023, 1, 2, 9, 3, 55, 399, DateTimeKind.Local).AddTicks(7142),
+                            Arrival = new DateTime(2023, 1, 3, 11, 13, 2, 650, DateTimeKind.Utc).AddTicks(2872),
+                            Departure = new DateTime(2023, 1, 2, 18, 58, 39, 834, DateTimeKind.Utc).AddTicks(2461),
                             FromId = new Guid("bec3b223-ab01-6d60-c952-23cef257312d"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("d574ecbb-e31b-fbba-f81b-123d28306a6f")
@@ -737,8 +719,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("09d56cb0-cd9e-d462-2a10-d634125fc56a"),
-                            Arrival = new DateTime(2023, 1, 17, 14, 23, 21, 21, DateTimeKind.Local).AddTicks(3850),
-                            Departure = new DateTime(2023, 1, 17, 11, 13, 32, 149, DateTimeKind.Local).AddTicks(9347),
+                            Arrival = new DateTime(2023, 1, 18, 13, 12, 49, 890, DateTimeKind.Utc).AddTicks(4478),
+                            Departure = new DateTime(2023, 1, 17, 21, 8, 16, 584, DateTimeKind.Utc).AddTicks(4661),
                             FromId = new Guid("5b6aed0b-8d10-48b9-5510-68d91365661a"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("62c15cd1-0fca-5dc0-9a06-55d394a2d898")
@@ -746,8 +728,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("d6262411-3f4c-1672-11d2-c1e42024512b"),
-                            Arrival = new DateTime(2023, 1, 8, 23, 19, 52, 39, DateTimeKind.Local).AddTicks(6077),
-                            Departure = new DateTime(2023, 1, 8, 19, 48, 25, 871, DateTimeKind.Local).AddTicks(4642),
+                            Arrival = new DateTime(2023, 1, 9, 22, 9, 20, 908, DateTimeKind.Utc).AddTicks(6594),
+                            Departure = new DateTime(2023, 1, 9, 5, 43, 10, 305, DateTimeKind.Utc).AddTicks(9900),
                             FromId = new Guid("615db99a-1b12-507b-734f-e2229097f81c"),
                             PlaneId = new Guid("5ea81455-0ff2-cf92-8e8d-954a8d558734"),
                             ToId = new Guid("213608f2-53eb-fa3c-064a-26cd5eaaa713")
@@ -755,8 +737,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("401ef71c-5ee2-50e2-bf01-1079a59e47ae"),
-                            Arrival = new DateTime(2023, 1, 28, 5, 10, 20, 130, DateTimeKind.Local).AddTicks(3870),
-                            Departure = new DateTime(2023, 1, 28, 1, 41, 21, 692, DateTimeKind.Local).AddTicks(1232),
+                            Arrival = new DateTime(2023, 1, 29, 3, 59, 48, 999, DateTimeKind.Utc).AddTicks(4383),
+                            Departure = new DateTime(2023, 1, 28, 11, 36, 6, 126, DateTimeKind.Utc).AddTicks(6488),
                             FromId = new Guid("67b047da-b652-fb14-9e88-e802b652a294"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("0ecb763b-465f-daef-3c12-8d23c6a218c1")
@@ -764,8 +746,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("50153d18-3bf2-3f74-a39f-26b2b2f42d08"),
-                            Arrival = new DateTime(2023, 1, 18, 20, 47, 1, 897, DateTimeKind.Local).AddTicks(6902),
-                            Departure = new DateTime(2023, 1, 18, 16, 58, 31, 367, DateTimeKind.Local).AddTicks(5159),
+                            Arrival = new DateTime(2023, 1, 19, 19, 36, 30, 766, DateTimeKind.Utc).AddTicks(7459),
+                            Departure = new DateTime(2023, 1, 19, 2, 53, 15, 802, DateTimeKind.Utc).AddTicks(437),
                             FromId = new Guid("a0c1a772-8d09-7a6a-6994-43e12599c587"),
                             PlaneId = new Guid("5ea81455-0ff2-cf92-8e8d-954a8d558734"),
                             ToId = new Guid("b805d93f-4168-a614-c8e2-a48401d53a6a")
@@ -773,8 +755,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("6bb0d151-867a-7c09-a893-be77bc04b909"),
-                            Arrival = new DateTime(2023, 1, 9, 21, 14, 54, 539, DateTimeKind.Local).AddTicks(3789),
-                            Departure = new DateTime(2023, 1, 9, 17, 18, 51, 186, DateTimeKind.Local).AddTicks(79),
+                            Arrival = new DateTime(2023, 1, 10, 20, 4, 23, 408, DateTimeKind.Utc).AddTicks(4487),
+                            Departure = new DateTime(2023, 1, 10, 3, 13, 35, 620, DateTimeKind.Utc).AddTicks(5428),
                             FromId = new Guid("b05bfb04-a734-19d6-600d-b53a74a6a716"),
                             PlaneId = new Guid("4974a191-133c-3a0b-2097-9c0ecb31bea7"),
                             ToId = new Guid("83f8f41f-7a58-4370-c478-c687d2de44a8")
@@ -782,8 +764,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c6e9611c-a9f2-a61a-9de6-ac60f8c66c64"),
-                            Arrival = new DateTime(2023, 1, 15, 20, 1, 21, 71, DateTimeKind.Local).AddTicks(4593),
-                            Departure = new DateTime(2023, 1, 15, 16, 33, 24, 763, DateTimeKind.Local).AddTicks(3827),
+                            Arrival = new DateTime(2023, 1, 16, 18, 50, 49, 940, DateTimeKind.Utc).AddTicks(5225),
+                            Departure = new DateTime(2023, 1, 16, 2, 28, 9, 197, DateTimeKind.Utc).AddTicks(9143),
                             FromId = new Guid("0ecb763b-465f-daef-3c12-8d23c6a218c1"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("413e5611-0f3b-4b29-918e-9e2b8daf0717")
@@ -791,8 +773,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("3a680cfa-f0f5-fe73-a57a-be21b5356fc7"),
-                            Arrival = new DateTime(2023, 1, 23, 8, 9, 50, 912, DateTimeKind.Local).AddTicks(5187),
-                            Departure = new DateTime(2023, 1, 23, 4, 9, 14, 285, DateTimeKind.Local).AddTicks(1319),
+                            Arrival = new DateTime(2023, 1, 24, 6, 59, 19, 781, DateTimeKind.Utc).AddTicks(5813),
+                            Departure = new DateTime(2023, 1, 23, 14, 3, 58, 719, DateTimeKind.Utc).AddTicks(6632),
                             FromId = new Guid("3fa7775f-d4c2-fe4f-29b4-2c90f262a20f"),
                             PlaneId = new Guid("ccfcc9e2-5809-8aba-7fb8-87de374bd9ea"),
                             ToId = new Guid("5095c31c-f6e4-cda4-abe6-15d0575021c9")
@@ -800,8 +782,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("1711ac0b-3dc4-a54c-0b78-6d034e215481"),
-                            Arrival = new DateTime(2023, 1, 24, 19, 46, 38, 856, DateTimeKind.Local).AddTicks(8963),
-                            Departure = new DateTime(2023, 1, 24, 16, 40, 19, 506, DateTimeKind.Local).AddTicks(9429),
+                            Arrival = new DateTime(2023, 1, 25, 18, 36, 7, 725, DateTimeKind.Utc).AddTicks(9629),
+                            Departure = new DateTime(2023, 1, 25, 2, 35, 3, 941, DateTimeKind.Utc).AddTicks(4762),
                             FromId = new Guid("dd76a6ab-7b2e-419e-da37-05f3f12609c7"),
                             PlaneId = new Guid("8538059f-1613-ae06-5eff-b46a68ce6415"),
                             ToId = new Guid("57441913-142a-7fd8-71e3-2b9eefa50eda")
@@ -809,8 +791,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("3eee6bf8-9143-9dfc-3fef-d87cecef6057"),
-                            Arrival = new DateTime(2023, 1, 12, 16, 19, 59, 577, DateTimeKind.Local).AddTicks(3571),
-                            Departure = new DateTime(2023, 1, 12, 13, 1, 48, 976, DateTimeKind.Local).AddTicks(7231),
+                            Arrival = new DateTime(2023, 1, 13, 15, 9, 28, 446, DateTimeKind.Utc).AddTicks(4234),
+                            Departure = new DateTime(2023, 1, 12, 22, 56, 33, 411, DateTimeKind.Utc).AddTicks(2562),
                             FromId = new Guid("6316f77f-e1be-cacb-716d-8a30ace9436e"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("0ecb763b-465f-daef-3c12-8d23c6a218c1")
@@ -818,8 +800,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("1d500299-1466-461a-188a-23472e134022"),
-                            Arrival = new DateTime(2023, 1, 23, 15, 25, 33, 689, DateTimeKind.Local).AddTicks(8010),
-                            Departure = new DateTime(2023, 1, 23, 11, 53, 18, 97, DateTimeKind.Local).AddTicks(9166),
+                            Arrival = new DateTime(2023, 1, 24, 14, 15, 2, 558, DateTimeKind.Utc).AddTicks(8620),
+                            Departure = new DateTime(2023, 1, 23, 21, 48, 2, 532, DateTimeKind.Utc).AddTicks(4471),
                             FromId = new Guid("7c38b5dd-68f0-070b-571e-62f20214aac6"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("3a697dc0-d59e-9309-f165-e19bdb903e73")
@@ -827,8 +809,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("879589cc-3162-29f4-68cb-057f4d5e699e"),
-                            Arrival = new DateTime(2023, 1, 21, 15, 8, 12, 675, DateTimeKind.Local).AddTicks(8493),
-                            Departure = new DateTime(2023, 1, 21, 11, 34, 14, 466, DateTimeKind.Local).AddTicks(7847),
+                            Arrival = new DateTime(2023, 1, 22, 13, 57, 41, 544, DateTimeKind.Utc).AddTicks(9100),
+                            Departure = new DateTime(2023, 1, 21, 21, 28, 58, 901, DateTimeKind.Utc).AddTicks(3151),
                             FromId = new Guid("09127902-7261-46ce-a6c1-063681635971"),
                             PlaneId = new Guid("5ea81455-0ff2-cf92-8e8d-954a8d558734"),
                             ToId = new Guid("3c52929b-3de6-7026-c31d-7e095c625b2e")
@@ -836,8 +818,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("35b56426-dcbd-341f-4aaf-07d751cd79bb"),
-                            Arrival = new DateTime(2023, 1, 19, 16, 38, 9, 812, DateTimeKind.Local).AddTicks(4901),
-                            Departure = new DateTime(2023, 1, 19, 13, 32, 42, 172, DateTimeKind.Local).AddTicks(9232),
+                            Arrival = new DateTime(2023, 1, 20, 15, 27, 38, 681, DateTimeKind.Utc).AddTicks(5529),
+                            Departure = new DateTime(2023, 1, 19, 23, 27, 26, 607, DateTimeKind.Utc).AddTicks(4546),
                             FromId = new Guid("92f94545-ce92-123d-9836-f7b9f4b948bb"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("66d4a404-deb4-6b10-633e-fb61165652b5")
@@ -845,8 +827,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c71dbfb0-b4e0-84d7-b8a4-2f6eb0a524df"),
-                            Arrival = new DateTime(2023, 1, 1, 11, 20, 27, 953, DateTimeKind.Local).AddTicks(6990),
-                            Departure = new DateTime(2023, 1, 1, 8, 10, 9, 336, DateTimeKind.Local).AddTicks(6680),
+                            Arrival = new DateTime(2023, 1, 2, 10, 9, 56, 822, DateTimeKind.Utc).AddTicks(7608),
+                            Departure = new DateTime(2023, 1, 1, 18, 4, 53, 771, DateTimeKind.Utc).AddTicks(1989),
                             FromId = new Guid("e901d463-5eba-a201-1af6-d52ea3ed1eca"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("92f94545-ce92-123d-9836-f7b9f4b948bb")
@@ -854,8 +836,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("a8fe1c1d-91fc-e3f0-8ad8-99bb3a76a597"),
-                            Arrival = new DateTime(2023, 1, 21, 5, 11, 0, 473, DateTimeKind.Local).AddTicks(3785),
-                            Departure = new DateTime(2023, 1, 21, 1, 27, 45, 60, DateTimeKind.Local).AddTicks(546),
+                            Arrival = new DateTime(2023, 1, 22, 4, 0, 29, 342, DateTimeKind.Utc).AddTicks(4399),
+                            Departure = new DateTime(2023, 1, 21, 11, 22, 29, 494, DateTimeKind.Utc).AddTicks(5853),
                             FromId = new Guid("20a683ad-9e6c-cdac-5b20-17e29fff1684"),
                             PlaneId = new Guid("5ea81455-0ff2-cf92-8e8d-954a8d558734"),
                             ToId = new Guid("316cdda5-4b93-59ed-3196-5b81f60f65e8")
@@ -863,8 +845,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("69d70a92-28a1-db54-445e-8e512792a31f"),
-                            Arrival = new DateTime(2023, 1, 15, 6, 43, 52, 818, DateTimeKind.Local).AddTicks(5243),
-                            Departure = new DateTime(2023, 1, 15, 3, 10, 48, 358, DateTimeKind.Local).AddTicks(3255),
+                            Arrival = new DateTime(2023, 1, 16, 5, 33, 21, 687, DateTimeKind.Utc).AddTicks(5899),
+                            Departure = new DateTime(2023, 1, 15, 13, 5, 32, 792, DateTimeKind.Utc).AddTicks(8583),
                             FromId = new Guid("58f66ccb-a3c8-a581-680e-7d1154310fc7"),
                             PlaneId = new Guid("8538059f-1613-ae06-5eff-b46a68ce6415"),
                             ToId = new Guid("d7e2bb26-9245-41a8-2d82-b3be3e1b3432")
@@ -872,8 +854,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("b295cc2e-2e75-487f-e4c8-2c8c448b1126"),
-                            Arrival = new DateTime(2023, 1, 22, 9, 9, 15, 227, DateTimeKind.Local).AddTicks(4728),
-                            Departure = new DateTime(2023, 1, 22, 5, 54, 30, 628, DateTimeKind.Local).AddTicks(9776),
+                            Arrival = new DateTime(2023, 1, 23, 7, 58, 44, 96, DateTimeKind.Utc).AddTicks(5314),
+                            Departure = new DateTime(2023, 1, 22, 15, 49, 15, 63, DateTimeKind.Utc).AddTicks(5069),
                             FromId = new Guid("518ba440-01e9-8225-988e-f7ee72ef1b62"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("0ecb763b-465f-daef-3c12-8d23c6a218c1")
@@ -881,8 +863,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("6a0b7945-e313-7702-4ff8-04610e643e41"),
-                            Arrival = new DateTime(2023, 1, 21, 3, 51, 33, 340, DateTimeKind.Local).AddTicks(2348),
-                            Departure = new DateTime(2023, 1, 21, 0, 36, 50, 468, DateTimeKind.Local).AddTicks(3025),
+                            Arrival = new DateTime(2023, 1, 22, 2, 41, 2, 209, DateTimeKind.Utc).AddTicks(2930),
+                            Departure = new DateTime(2023, 1, 21, 10, 31, 34, 902, DateTimeKind.Utc).AddTicks(8316),
                             FromId = new Guid("51dbe856-886e-2eb6-9bc9-4106bac99bf9"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("36afde81-f203-8bb6-b502-73b908328efc")
@@ -890,8 +872,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c4629660-07e2-f891-de89-ba4c99e8528a"),
-                            Arrival = new DateTime(2023, 1, 23, 0, 35, 34, 230, DateTimeKind.Local).AddTicks(174),
-                            Departure = new DateTime(2023, 1, 22, 20, 55, 5, 39, DateTimeKind.Local).AddTicks(6024),
+                            Arrival = new DateTime(2023, 1, 23, 23, 25, 3, 99, DateTimeKind.Utc).AddTicks(754),
+                            Departure = new DateTime(2023, 1, 23, 6, 49, 49, 474, DateTimeKind.Utc).AddTicks(1314),
                             FromId = new Guid("e1f4bf2b-5b92-2417-30c1-6366da03f928"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("49fc59bc-fc35-e2ff-5f0a-ceaf0939b700")
@@ -899,8 +881,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("2b27d095-2635-e4d2-8930-6fc574e5e3a8"),
-                            Arrival = new DateTime(2023, 1, 27, 0, 34, 4, 25, DateTimeKind.Local).AddTicks(2097),
-                            Departure = new DateTime(2023, 1, 26, 21, 9, 16, 710, DateTimeKind.Local).AddTicks(3825),
+                            Arrival = new DateTime(2023, 1, 27, 23, 23, 32, 894, DateTimeKind.Utc).AddTicks(2713),
+                            Departure = new DateTime(2023, 1, 27, 7, 4, 1, 144, DateTimeKind.Utc).AddTicks(9133),
                             FromId = new Guid("36afde81-f203-8bb6-b502-73b908328efc"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("40ff80a5-a75c-5baf-5e89-1b06fb442667")
@@ -908,8 +890,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("154a6e70-7c74-b7eb-6ec8-ad59c2cbc63a"),
-                            Arrival = new DateTime(2023, 1, 11, 18, 17, 46, 870, DateTimeKind.Local).AddTicks(8558),
-                            Departure = new DateTime(2023, 1, 11, 14, 17, 16, 839, DateTimeKind.Local).AddTicks(259),
+                            Arrival = new DateTime(2023, 1, 12, 17, 7, 15, 739, DateTimeKind.Utc).AddTicks(9114),
+                            Departure = new DateTime(2023, 1, 12, 0, 12, 1, 273, DateTimeKind.Utc).AddTicks(5537),
                             FromId = new Guid("dd76a6ab-7b2e-419e-da37-05f3f12609c7"),
                             PlaneId = new Guid("4974a191-133c-3a0b-2097-9c0ecb31bea7"),
                             ToId = new Guid("678d1793-bef0-c597-3e44-711d34d0f3e6")
@@ -917,8 +899,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("864a5955-0325-e16f-a132-6f0c512461dd"),
-                            Arrival = new DateTime(2023, 1, 28, 18, 9, 12, 468, DateTimeKind.Local).AddTicks(4139),
-                            Departure = new DateTime(2023, 1, 28, 15, 1, 43, 412, DateTimeKind.Local).AddTicks(4149),
+                            Arrival = new DateTime(2023, 1, 29, 16, 58, 41, 337, DateTimeKind.Utc).AddTicks(4692),
+                            Departure = new DateTime(2023, 1, 29, 0, 56, 27, 846, DateTimeKind.Utc).AddTicks(9425),
                             FromId = new Guid("d3eb5f43-d318-8d5d-13be-3d6c53b5c287"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("964de9f9-e59c-63d9-f92b-ecbe6651c609")
@@ -926,8 +908,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("6bc1671a-1ab2-6d1c-0c83-fab16a1a15ff"),
-                            Arrival = new DateTime(2023, 1, 7, 20, 45, 11, 998, DateTimeKind.Local).AddTicks(1123),
-                            Departure = new DateTime(2023, 1, 7, 16, 50, 58, 358, DateTimeKind.Local).AddTicks(363),
+                            Arrival = new DateTime(2023, 1, 8, 19, 34, 40, 867, DateTimeKind.Utc).AddTicks(1680),
+                            Departure = new DateTime(2023, 1, 8, 2, 45, 42, 792, DateTimeKind.Utc).AddTicks(5641),
                             FromId = new Guid("09127902-7261-46ce-a6c1-063681635971"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("e1f4bf2b-5b92-2417-30c1-6366da03f928")
@@ -935,8 +917,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("4d3e96cd-a670-5d64-83eb-36d7e63bf188"),
-                            Arrival = new DateTime(2023, 1, 1, 8, 18, 25, 166, DateTimeKind.Local).AddTicks(1259),
-                            Departure = new DateTime(2023, 1, 1, 4, 48, 16, 843, DateTimeKind.Local).AddTicks(5448),
+                            Arrival = new DateTime(2023, 1, 2, 7, 7, 54, 35, DateTimeKind.Utc).AddTicks(1854),
+                            Departure = new DateTime(2023, 1, 1, 14, 43, 1, 278, DateTimeKind.Utc).AddTicks(745),
                             FromId = new Guid("5b6aed0b-8d10-48b9-5510-68d91365661a"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("3a697dc0-d59e-9309-f165-e19bdb903e73")
@@ -944,8 +926,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("5a74ae95-09e7-dd4b-8771-316c584dd183"),
-                            Arrival = new DateTime(2023, 1, 18, 23, 26, 39, 224, DateTimeKind.Local).AddTicks(2774),
-                            Departure = new DateTime(2023, 1, 18, 20, 8, 51, 821, DateTimeKind.Local).AddTicks(266),
+                            Arrival = new DateTime(2023, 1, 19, 22, 16, 8, 93, DateTimeKind.Utc).AddTicks(3264),
+                            Departure = new DateTime(2023, 1, 19, 6, 3, 36, 255, DateTimeKind.Utc).AddTicks(5511),
                             FromId = new Guid("09127902-7261-46ce-a6c1-063681635971"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("a41c736f-e312-be92-bab2-8b66ba608ea5")
@@ -953,8 +935,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("dac49789-df84-7623-73dd-8f286137e7c9"),
-                            Arrival = new DateTime(2023, 1, 24, 4, 2, 37, 421, DateTimeKind.Local).AddTicks(4992),
-                            Departure = new DateTime(2023, 1, 24, 0, 46, 37, 66, DateTimeKind.Local).AddTicks(5915),
+                            Arrival = new DateTime(2023, 1, 25, 2, 52, 6, 290, DateTimeKind.Utc).AddTicks(5478),
+                            Departure = new DateTime(2023, 1, 24, 10, 41, 21, 501, DateTimeKind.Utc).AddTicks(1158),
                             FromId = new Guid("b93332e1-21e1-85a9-ffd5-81afd50083cb"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("36afde81-f203-8bb6-b502-73b908328efc")
@@ -962,8 +944,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("6b047afb-ee8d-0520-fc30-759a630c17af"),
-                            Arrival = new DateTime(2023, 1, 28, 20, 58, 30, 423, DateTimeKind.Local).AddTicks(8916),
-                            Departure = new DateTime(2023, 1, 28, 17, 16, 47, 742, DateTimeKind.Local).AddTicks(6442),
+                            Arrival = new DateTime(2023, 1, 29, 19, 47, 59, 292, DateTimeKind.Utc).AddTicks(9398),
+                            Departure = new DateTime(2023, 1, 29, 3, 11, 32, 177, DateTimeKind.Utc).AddTicks(1683),
                             FromId = new Guid("ae29c1b6-3162-e02c-a235-a77369338165"),
                             PlaneId = new Guid("5ea81455-0ff2-cf92-8e8d-954a8d558734"),
                             ToId = new Guid("c60ae875-bcec-c6d2-b190-b11f93bce6e5")
@@ -971,8 +953,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("43a29314-15f7-bae9-2bb9-d79f8f8d1cc0"),
-                            Arrival = new DateTime(2023, 1, 5, 3, 49, 34, 910, DateTimeKind.Local).AddTicks(743),
-                            Departure = new DateTime(2023, 1, 4, 23, 46, 11, 543, DateTimeKind.Local).AddTicks(276),
+                            Arrival = new DateTime(2023, 1, 6, 2, 39, 3, 779, DateTimeKind.Utc).AddTicks(1265),
+                            Departure = new DateTime(2023, 1, 5, 9, 40, 55, 977, DateTimeKind.Utc).AddTicks(5537),
                             FromId = new Guid("e1f4bf2b-5b92-2417-30c1-6366da03f928"),
                             PlaneId = new Guid("ccfcc9e2-5809-8aba-7fb8-87de374bd9ea"),
                             ToId = new Guid("dd76a6ab-7b2e-419e-da37-05f3f12609c7")
@@ -980,8 +962,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("8d19ad76-2bfd-19d0-7226-71f018e7e661"),
-                            Arrival = new DateTime(2023, 1, 19, 9, 10, 15, 758, DateTimeKind.Local).AddTicks(5356),
-                            Departure = new DateTime(2023, 1, 19, 6, 0, 27, 113, DateTimeKind.Local).AddTicks(1356),
+                            Arrival = new DateTime(2023, 1, 20, 7, 59, 44, 627, DateTimeKind.Utc).AddTicks(5812),
+                            Departure = new DateTime(2023, 1, 19, 15, 55, 11, 547, DateTimeKind.Utc).AddTicks(6584),
                             FromId = new Guid("d32fe062-0e6b-a9dd-2d43-e3195563abdd"),
                             PlaneId = new Guid("0aac9aea-970d-4c24-2c52-10626a95e60f"),
                             ToId = new Guid("bec3b223-ab01-6d60-c952-23cef257312d")
@@ -989,8 +971,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("fb9e77d0-7ed3-effa-106b-3a25f59de688"),
-                            Arrival = new DateTime(2023, 1, 23, 7, 45, 14, 972, DateTimeKind.Local).AddTicks(9586),
-                            Departure = new DateTime(2023, 1, 23, 3, 52, 50, 789, DateTimeKind.Local).AddTicks(214),
+                            Arrival = new DateTime(2023, 1, 24, 6, 34, 43, 842, DateTimeKind.Utc).AddTicks(38),
+                            Departure = new DateTime(2023, 1, 23, 13, 47, 35, 223, DateTimeKind.Utc).AddTicks(5440),
                             FromId = new Guid("678d1793-bef0-c597-3e44-711d34d0f3e6"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("9056b5bc-f2fc-6ffa-f56a-f5701226825e")
@@ -998,8 +980,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("ae6592b8-a677-5e36-4760-17cb26a6367b"),
-                            Arrival = new DateTime(2023, 1, 3, 2, 41, 19, 361, DateTimeKind.Local).AddTicks(2229),
-                            Departure = new DateTime(2023, 1, 2, 22, 50, 29, 399, DateTimeKind.Local).AddTicks(9875),
+                            Arrival = new DateTime(2023, 1, 4, 1, 30, 48, 230, DateTimeKind.Utc).AddTicks(2671),
+                            Departure = new DateTime(2023, 1, 3, 8, 45, 13, 834, DateTimeKind.Utc).AddTicks(5096),
                             FromId = new Guid("316cdda5-4b93-59ed-3196-5b81f60f65e8"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("49fc59bc-fc35-e2ff-5f0a-ceaf0939b700")
@@ -1007,8 +989,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("cb37ba62-4922-d800-719c-ef1da917e438"),
-                            Arrival = new DateTime(2023, 1, 2, 23, 56, 39, 851, DateTimeKind.Local).AddTicks(2117),
-                            Departure = new DateTime(2023, 1, 2, 20, 8, 21, 60, DateTimeKind.Local).AddTicks(4766),
+                            Arrival = new DateTime(2023, 1, 3, 22, 46, 8, 720, DateTimeKind.Utc).AddTicks(2598),
+                            Departure = new DateTime(2023, 1, 3, 6, 3, 5, 495, DateTimeKind.Utc).AddTicks(6),
                             FromId = new Guid("b52028ea-9cfd-bdaf-3f49-6b0b069d95c1"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("58fd3a9c-75dd-c357-b3e1-04749f29a7dc")
@@ -1016,8 +998,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("59230ac9-f7cf-0db0-23d0-3d437656d72e"),
-                            Arrival = new DateTime(2023, 1, 28, 19, 4, 20, 687, DateTimeKind.Local).AddTicks(5425),
-                            Departure = new DateTime(2023, 1, 28, 15, 52, 59, 42, DateTimeKind.Local).AddTicks(1151),
+                            Arrival = new DateTime(2023, 1, 29, 17, 53, 49, 556, DateTimeKind.Utc).AddTicks(5805),
+                            Departure = new DateTime(2023, 1, 29, 1, 47, 43, 476, DateTimeKind.Utc).AddTicks(6341),
                             FromId = new Guid("6ae094dd-0331-6682-b745-30deecc85579"),
                             PlaneId = new Guid("8538059f-1613-ae06-5eff-b46a68ce6415"),
                             ToId = new Guid("24236ed8-e2af-45ff-95ce-c77cc793f831")
@@ -1025,8 +1007,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("ae27c4d5-8e7c-4251-45cd-d3119898b013"),
-                            Arrival = new DateTime(2023, 1, 2, 4, 43, 12, 697, DateTimeKind.Local).AddTicks(6976),
-                            Departure = new DateTime(2023, 1, 2, 1, 8, 27, 298, DateTimeKind.Local).AddTicks(6547),
+                            Arrival = new DateTime(2023, 1, 3, 3, 32, 41, 566, DateTimeKind.Utc).AddTicks(7359),
+                            Departure = new DateTime(2023, 1, 2, 11, 3, 11, 733, DateTimeKind.Utc).AddTicks(1739),
                             FromId = new Guid("2f1fa003-a663-e904-080e-9cc152cfdd82"),
                             PlaneId = new Guid("8538059f-1613-ae06-5eff-b46a68ce6415"),
                             ToId = new Guid("d3eb5f43-d318-8d5d-13be-3d6c53b5c287")
@@ -1034,8 +1016,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("d9b2cc4e-c032-090d-6a08-7c8e0bf346fb"),
-                            Arrival = new DateTime(2023, 1, 1, 19, 17, 57, 223, DateTimeKind.Local).AddTicks(9753),
-                            Departure = new DateTime(2023, 1, 1, 15, 35, 29, 86, DateTimeKind.Local).AddTicks(7996),
+                            Arrival = new DateTime(2023, 1, 2, 18, 7, 26, 93, DateTimeKind.Utc).AddTicks(129),
+                            Departure = new DateTime(2023, 1, 2, 1, 30, 13, 521, DateTimeKind.Utc).AddTicks(3184),
                             FromId = new Guid("413e5611-0f3b-4b29-918e-9e2b8daf0717"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("9988c5b2-6ac4-b3cf-ee49-952691688933")
@@ -1043,8 +1025,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("326902de-bede-1a27-7000-0ae6ba87f875"),
-                            Arrival = new DateTime(2023, 1, 20, 3, 41, 32, 363, DateTimeKind.Local).AddTicks(4624),
-                            Departure = new DateTime(2023, 1, 19, 23, 44, 46, 693, DateTimeKind.Local).AddTicks(1784),
+                            Arrival = new DateTime(2023, 1, 21, 2, 31, 1, 232, DateTimeKind.Utc).AddTicks(5041),
+                            Departure = new DateTime(2023, 1, 20, 9, 39, 31, 127, DateTimeKind.Utc).AddTicks(6992),
                             FromId = new Guid("dab5a148-ee05-99a1-8972-f5f14c284465"),
                             PlaneId = new Guid("0aac9aea-970d-4c24-2c52-10626a95e60f"),
                             ToId = new Guid("26d9ff62-1887-9a43-cb94-740d541f22ce")
@@ -1052,8 +1034,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("8257c4da-a58d-186a-c700-e9f0006fc948"),
-                            Arrival = new DateTime(2023, 1, 25, 18, 0, 14, 9, DateTimeKind.Local).AddTicks(2920),
-                            Departure = new DateTime(2023, 1, 25, 14, 20, 50, 450, DateTimeKind.Local).AddTicks(1433),
+                            Arrival = new DateTime(2023, 1, 26, 16, 49, 42, 878, DateTimeKind.Utc).AddTicks(3274),
+                            Departure = new DateTime(2023, 1, 26, 0, 15, 34, 884, DateTimeKind.Utc).AddTicks(6610),
                             FromId = new Guid("bc267cd5-ce98-812f-7dfc-e62f3bd1d180"),
                             PlaneId = new Guid("5ea81455-0ff2-cf92-8e8d-954a8d558734"),
                             ToId = new Guid("5352ba8c-9e8d-346f-bfff-a8842dc7947f")
@@ -1061,8 +1043,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("a87108f9-6c51-854d-d608-9a1b91033e12"),
-                            Arrival = new DateTime(2023, 1, 5, 23, 37, 17, 997, DateTimeKind.Local).AddTicks(1299),
-                            Departure = new DateTime(2023, 1, 5, 20, 29, 23, 468, DateTimeKind.Local).AddTicks(126),
+                            Arrival = new DateTime(2023, 1, 6, 22, 26, 46, 866, DateTimeKind.Utc).AddTicks(1649),
+                            Departure = new DateTime(2023, 1, 6, 6, 24, 7, 902, DateTimeKind.Utc).AddTicks(5301),
                             FromId = new Guid("b805d93f-4168-a614-c8e2-a48401d53a6a"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("7108d887-76ee-5bd3-e742-f4ec88a01684")
@@ -1070,8 +1052,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("f521ffa9-17b9-2d2f-2df5-cb5e49e1bce5"),
-                            Arrival = new DateTime(2022, 12, 31, 2, 5, 24, 538, DateTimeKind.Local).AddTicks(6134),
-                            Departure = new DateTime(2022, 12, 30, 22, 22, 52, 618, DateTimeKind.Local).AddTicks(488),
+                            Arrival = new DateTime(2023, 1, 1, 0, 54, 53, 407, DateTimeKind.Utc).AddTicks(6476),
+                            Departure = new DateTime(2022, 12, 31, 8, 17, 37, 52, DateTimeKind.Utc).AddTicks(5659),
                             FromId = new Guid("92f94545-ce92-123d-9836-f7b9f4b948bb"),
                             PlaneId = new Guid("4974a191-133c-3a0b-2097-9c0ecb31bea7"),
                             ToId = new Guid("6d6c12e3-4e9a-a2d5-218b-52dda8a12ee0")
@@ -1079,8 +1061,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("d54ef8f0-6b6e-358a-f603-e928ed4f0850"),
-                            Arrival = new DateTime(2023, 1, 17, 18, 32, 1, 642, DateTimeKind.Local).AddTicks(3888),
-                            Departure = new DateTime(2023, 1, 17, 15, 7, 4, 4, DateTimeKind.Local).AddTicks(461),
+                            Arrival = new DateTime(2023, 1, 18, 17, 21, 30, 511, DateTimeKind.Utc).AddTicks(4329),
+                            Departure = new DateTime(2023, 1, 18, 1, 1, 48, 438, DateTimeKind.Utc).AddTicks(5681),
                             FromId = new Guid("7c38b5dd-68f0-070b-571e-62f20214aac6"),
                             PlaneId = new Guid("85bb2a8f-44bc-0303-7f3c-f582a2c42134"),
                             ToId = new Guid("3f8ffa80-028a-08db-78b7-f1e6fe318ef7")
@@ -1088,8 +1070,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("bccf13a8-2248-2d82-d615-dfa16fb907d2"),
-                            Arrival = new DateTime(2023, 1, 21, 17, 38, 29, 169, DateTimeKind.Local).AddTicks(4337),
-                            Departure = new DateTime(2023, 1, 21, 14, 23, 6, 264, DateTimeKind.Local).AddTicks(6654),
+                            Arrival = new DateTime(2023, 1, 22, 16, 27, 58, 38, DateTimeKind.Utc).AddTicks(4717),
+                            Departure = new DateTime(2023, 1, 22, 0, 17, 50, 699, DateTimeKind.Utc).AddTicks(1844),
                             FromId = new Guid("7c38b5dd-68f0-070b-571e-62f20214aac6"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("1a487d75-635c-260c-048e-994bc7e3754b")
@@ -1097,8 +1079,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("35e1f137-925c-94b4-27a3-e4fd3b48e47e"),
-                            Arrival = new DateTime(2023, 1, 4, 16, 24, 40, 898, DateTimeKind.Local).AddTicks(8996),
-                            Departure = new DateTime(2023, 1, 4, 12, 46, 23, 577, DateTimeKind.Local).AddTicks(9331),
+                            Arrival = new DateTime(2023, 1, 5, 15, 14, 9, 767, DateTimeKind.Utc).AddTicks(9366),
+                            Departure = new DateTime(2023, 1, 4, 22, 41, 8, 12, DateTimeKind.Utc).AddTicks(4516),
                             FromId = new Guid("bc267cd5-ce98-812f-7dfc-e62f3bd1d180"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("964de9f9-e59c-63d9-f92b-ecbe6651c609")
@@ -1106,8 +1088,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("8709ee20-967e-7e00-914e-a87a607121ed"),
-                            Arrival = new DateTime(2023, 1, 6, 14, 37, 53, 230, DateTimeKind.Local).AddTicks(8023),
-                            Departure = new DateTime(2023, 1, 6, 11, 31, 59, 252, DateTimeKind.Local).AddTicks(7610),
+                            Arrival = new DateTime(2023, 1, 7, 13, 27, 22, 99, DateTimeKind.Utc).AddTicks(8389),
+                            Departure = new DateTime(2023, 1, 6, 21, 26, 43, 687, DateTimeKind.Utc).AddTicks(2793),
                             FromId = new Guid("3a697dc0-d59e-9309-f165-e19bdb903e73"),
                             PlaneId = new Guid("8538059f-1613-ae06-5eff-b46a68ce6415"),
                             ToId = new Guid("62c15cd1-0fca-5dc0-9a06-55d394a2d898")
@@ -1115,8 +1097,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("a3fb72ae-7134-5322-0823-629bee1603d8"),
-                            Arrival = new DateTime(2023, 1, 4, 20, 48, 56, 927, DateTimeKind.Local).AddTicks(9638),
-                            Departure = new DateTime(2023, 1, 4, 17, 29, 29, 274, DateTimeKind.Local).AddTicks(5880),
+                            Arrival = new DateTime(2023, 1, 5, 19, 38, 25, 797, DateTimeKind.Utc).AddTicks(48),
+                            Departure = new DateTime(2023, 1, 5, 3, 24, 13, 709, DateTimeKind.Utc).AddTicks(1085),
                             FromId = new Guid("26d9ff62-1887-9a43-cb94-740d541f22ce"),
                             PlaneId = new Guid("ccfcc9e2-5809-8aba-7fb8-87de374bd9ea"),
                             ToId = new Guid("6ae094dd-0331-6682-b745-30deecc85579")
@@ -1124,8 +1106,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("833c5595-d6da-91c2-903a-b93a70717b0e"),
-                            Arrival = new DateTime(2023, 1, 27, 17, 31, 49, 924, DateTimeKind.Local).AddTicks(5799),
-                            Departure = new DateTime(2023, 1, 27, 14, 23, 41, 539, DateTimeKind.Local).AddTicks(8044),
+                            Arrival = new DateTime(2023, 1, 28, 16, 21, 18, 793, DateTimeKind.Utc).AddTicks(6075),
+                            Departure = new DateTime(2023, 1, 28, 0, 18, 25, 974, DateTimeKind.Utc).AddTicks(3182),
                             FromId = new Guid("845dba0b-1c3b-15aa-d5db-fc85176ea91c"),
                             PlaneId = new Guid("ccfcc9e2-5809-8aba-7fb8-87de374bd9ea"),
                             ToId = new Guid("216c811c-3365-ec83-d9fe-9800686277b1")
@@ -1133,8 +1115,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("de452a89-5a71-151e-d90d-931a82191cbe"),
-                            Arrival = new DateTime(2023, 1, 13, 8, 49, 48, 680, DateTimeKind.Local).AddTicks(4140),
-                            Departure = new DateTime(2023, 1, 13, 5, 29, 48, 487, DateTimeKind.Local).AddTicks(5496),
+                            Arrival = new DateTime(2023, 1, 14, 7, 39, 17, 549, DateTimeKind.Utc).AddTicks(4412),
+                            Departure = new DateTime(2023, 1, 13, 15, 24, 32, 922, DateTimeKind.Utc).AddTicks(632),
                             FromId = new Guid("efbff604-380c-8625-c308-218f15bcd476"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("1a053781-6433-57af-f547-1ebfbd2bfe3e")
@@ -1142,8 +1124,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("61a9e977-a57e-c987-ca94-d7d5ec0c2af7"),
-                            Arrival = new DateTime(2023, 1, 12, 6, 51, 51, 838, DateTimeKind.Local).AddTicks(1048),
-                            Departure = new DateTime(2023, 1, 12, 3, 33, 0, 516, DateTimeKind.Local).AddTicks(1854),
+                            Arrival = new DateTime(2023, 1, 13, 5, 41, 20, 707, DateTimeKind.Utc).AddTicks(1325),
+                            Departure = new DateTime(2023, 1, 12, 13, 27, 44, 950, DateTimeKind.Utc).AddTicks(6992),
                             FromId = new Guid("ae29c1b6-3162-e02c-a235-a77369338165"),
                             PlaneId = new Guid("85bb2a8f-44bc-0303-7f3c-f582a2c42134"),
                             ToId = new Guid("1c685168-a6d6-10c7-3594-1264cfe88c5d")
@@ -1151,8 +1133,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("20252cb7-58ee-505e-c3f0-8a7d6711419c"),
-                            Arrival = new DateTime(2023, 1, 14, 6, 54, 11, 826, DateTimeKind.Local).AddTicks(6890),
-                            Departure = new DateTime(2023, 1, 14, 2, 57, 54, 534, DateTimeKind.Local).AddTicks(2879),
+                            Arrival = new DateTime(2023, 1, 15, 5, 43, 40, 695, DateTimeKind.Utc).AddTicks(7206),
+                            Departure = new DateTime(2023, 1, 14, 12, 52, 38, 968, DateTimeKind.Utc).AddTicks(8037),
                             FromId = new Guid("edc1402a-3370-f890-284b-e9c5ef2b12eb"),
                             PlaneId = new Guid("8538059f-1613-ae06-5eff-b46a68ce6415"),
                             ToId = new Guid("3fa7775f-d4c2-fe4f-29b4-2c90f262a20f")
@@ -1160,8 +1142,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("44bc790e-0d96-c6f2-7cf0-1ebb46bfbc83"),
-                            Arrival = new DateTime(2022, 12, 31, 0, 17, 25, 776, DateTimeKind.Local).AddTicks(5363),
-                            Departure = new DateTime(2022, 12, 30, 20, 45, 12, 119, DateTimeKind.Local).AddTicks(9941),
+                            Arrival = new DateTime(2022, 12, 31, 23, 6, 54, 645, DateTimeKind.Utc).AddTicks(5545),
+                            Departure = new DateTime(2022, 12, 31, 6, 39, 56, 554, DateTimeKind.Utc).AddTicks(5032),
                             FromId = new Guid("213608f2-53eb-fa3c-064a-26cd5eaaa713"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("baab63ed-1251-efeb-3db7-7b7eb4163d7c")
@@ -1169,8 +1151,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("584ca306-fa84-5be9-2676-c60e30a9b369"),
-                            Arrival = new DateTime(2023, 1, 15, 2, 16, 20, 676, DateTimeKind.Local).AddTicks(2460),
-                            Departure = new DateTime(2023, 1, 14, 23, 11, 35, 978, DateTimeKind.Local).AddTicks(8134),
+                            Arrival = new DateTime(2023, 1, 16, 1, 5, 49, 545, DateTimeKind.Utc).AddTicks(2637),
+                            Departure = new DateTime(2023, 1, 15, 9, 6, 20, 413, DateTimeKind.Utc).AddTicks(3222),
                             FromId = new Guid("8a4f5c9b-c14d-3923-110b-d614f8c180e7"),
                             PlaneId = new Guid("5ea81455-0ff2-cf92-8e8d-954a8d558734"),
                             ToId = new Guid("40ff80a5-a75c-5baf-5e89-1b06fb442667")
@@ -1178,8 +1160,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c26b0047-5121-1885-3c62-696dd108d66f"),
-                            Arrival = new DateTime(2023, 1, 8, 20, 5, 17, 759, DateTimeKind.Local).AddTicks(425),
-                            Departure = new DateTime(2023, 1, 8, 16, 10, 14, 892, DateTimeKind.Local).AddTicks(5134),
+                            Arrival = new DateTime(2023, 1, 9, 18, 54, 46, 628, DateTimeKind.Utc).AddTicks(596),
+                            Departure = new DateTime(2023, 1, 9, 2, 4, 59, 327, DateTimeKind.Utc).AddTicks(220),
                             FromId = new Guid("8a4f5c9b-c14d-3923-110b-d614f8c180e7"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("d32fe062-0e6b-a9dd-2d43-e3195563abdd")
@@ -1187,8 +1169,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("ac587955-1616-1a09-6538-01bcf0bfa2e1"),
-                            Arrival = new DateTime(2023, 1, 25, 13, 14, 19, 479, DateTimeKind.Local).AddTicks(9553),
-                            Departure = new DateTime(2023, 1, 25, 9, 12, 42, 602, DateTimeKind.Local).AddTicks(3604),
+                            Arrival = new DateTime(2023, 1, 26, 12, 3, 48, 348, DateTimeKind.Utc).AddTicks(9706),
+                            Departure = new DateTime(2023, 1, 25, 19, 7, 27, 36, DateTimeKind.Utc).AddTicks(8680),
                             FromId = new Guid("815becb2-4854-b3f6-1b77-213cc5eee7d2"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("b05bfb04-a734-19d6-600d-b53a74a6a716")
@@ -1196,8 +1178,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("a05d13ea-a05e-f9dc-ef46-39631df28713"),
-                            Arrival = new DateTime(2023, 1, 22, 3, 42, 53, 351, DateTimeKind.Local).AddTicks(1555),
-                            Departure = new DateTime(2023, 1, 22, 0, 37, 14, 601, DateTimeKind.Local).AddTicks(9677),
+                            Arrival = new DateTime(2023, 1, 23, 2, 32, 22, 220, DateTimeKind.Utc).AddTicks(1699),
+                            Departure = new DateTime(2023, 1, 22, 10, 31, 59, 36, DateTimeKind.Utc).AddTicks(4749),
                             FromId = new Guid("51dbe856-886e-2eb6-9bc9-4106bac99bf9"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("e8a69852-6982-4bc2-d038-659d7459d2d2")
@@ -1205,8 +1187,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("b16729d6-48e1-8e33-56ae-69a5296a65fb"),
-                            Arrival = new DateTime(2023, 1, 21, 18, 54, 48, 168, DateTimeKind.Local).AddTicks(2353),
-                            Departure = new DateTime(2023, 1, 21, 15, 1, 33, 471, DateTimeKind.Local).AddTicks(2616),
+                            Arrival = new DateTime(2023, 1, 22, 17, 44, 17, 37, DateTimeKind.Utc).AddTicks(2493),
+                            Departure = new DateTime(2023, 1, 22, 0, 56, 17, 905, DateTimeKind.Utc).AddTicks(7686),
                             FromId = new Guid("edc1402a-3370-f890-284b-e9c5ef2b12eb"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("49e7d14c-7d36-e1a7-60c3-2aa25a3093da")
@@ -1214,8 +1196,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("58c8f276-ccd2-cd1b-8057-6de74413eaf5"),
-                            Arrival = new DateTime(2023, 1, 11, 10, 23, 59, 510, DateTimeKind.Local).AddTicks(4131),
-                            Departure = new DateTime(2023, 1, 11, 6, 29, 51, 731, DateTimeKind.Local).AddTicks(1182),
+                            Arrival = new DateTime(2023, 1, 12, 9, 13, 28, 379, DateTimeKind.Utc).AddTicks(4267),
+                            Departure = new DateTime(2023, 1, 11, 16, 24, 36, 165, DateTimeKind.Utc).AddTicks(6250),
                             FromId = new Guid("6d6c12e3-4e9a-a2d5-218b-52dda8a12ee0"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("5095c31c-f6e4-cda4-abe6-15d0575021c9")
@@ -1223,8 +1205,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("bdcf9798-87f4-1721-0a53-c54fdd60379f"),
-                            Arrival = new DateTime(2023, 1, 18, 9, 22, 45, 233, DateTimeKind.Local).AddTicks(2037),
-                            Departure = new DateTime(2023, 1, 18, 5, 30, 17, 806, DateTimeKind.Local).AddTicks(4711),
+                            Arrival = new DateTime(2023, 1, 19, 8, 12, 14, 102, DateTimeKind.Utc).AddTicks(2149),
+                            Departure = new DateTime(2023, 1, 18, 15, 25, 2, 240, DateTimeKind.Utc).AddTicks(9767),
                             FromId = new Guid("ed22d346-e5cc-9759-1cce-2b19aa2f8e7e"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("a41c736f-e312-be92-bab2-8b66ba608ea5")
@@ -1232,8 +1214,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("bdfc56d6-57e5-067b-1c3a-1d82b6dd5bf8"),
-                            Arrival = new DateTime(2023, 1, 25, 0, 11, 19, 273, DateTimeKind.Local).AddTicks(9406),
-                            Departure = new DateTime(2023, 1, 24, 20, 54, 59, 104, DateTimeKind.Local).AddTicks(3582),
+                            Arrival = new DateTime(2023, 1, 25, 23, 0, 48, 142, DateTimeKind.Utc).AddTicks(9510),
+                            Departure = new DateTime(2023, 1, 25, 6, 49, 43, 538, DateTimeKind.Utc).AddTicks(8634),
                             FromId = new Guid("d32fe062-0e6b-a9dd-2d43-e3195563abdd"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("289110d0-98b3-a713-2fdd-59bf53f22d95")
@@ -1241,8 +1223,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("98a70476-b266-55b2-966e-dc91a9c240d2"),
-                            Arrival = new DateTime(2023, 1, 18, 23, 34, 19, 473, DateTimeKind.Local).AddTicks(6872),
-                            Departure = new DateTime(2023, 1, 18, 20, 6, 32, 739, DateTimeKind.Local).AddTicks(1936),
+                            Arrival = new DateTime(2023, 1, 19, 22, 23, 48, 342, DateTimeKind.Utc).AddTicks(6984),
+                            Departure = new DateTime(2023, 1, 19, 6, 1, 17, 173, DateTimeKind.Utc).AddTicks(6992),
                             FromId = new Guid("5ff50fdd-00de-77e3-9e84-8a017739d1dc"),
                             PlaneId = new Guid("8538059f-1613-ae06-5eff-b46a68ce6415"),
                             ToId = new Guid("413e5611-0f3b-4b29-918e-9e2b8daf0717")
@@ -1250,8 +1232,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("cda818ed-8326-a6dc-bd30-361e0a605254"),
-                            Arrival = new DateTime(2023, 1, 6, 15, 58, 1, 18, DateTimeKind.Local).AddTicks(4415),
-                            Departure = new DateTime(2023, 1, 6, 12, 33, 11, 486, DateTimeKind.Local).AddTicks(3639),
+                            Arrival = new DateTime(2023, 1, 7, 14, 47, 29, 887, DateTimeKind.Utc).AddTicks(4518),
+                            Departure = new DateTime(2023, 1, 6, 22, 27, 55, 920, DateTimeKind.Utc).AddTicks(8691),
                             FromId = new Guid("6e0c5b5e-6e19-824d-7965-bacbc13b7e49"),
                             PlaneId = new Guid("85bb2a8f-44bc-0303-7f3c-f582a2c42134"),
                             ToId = new Guid("a0c1a772-8d09-7a6a-6994-43e12599c587")
@@ -1259,8 +1241,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("f140cc85-1b0d-251a-9ace-1454a488ecff"),
-                            Arrival = new DateTime(2023, 1, 28, 21, 39, 17, 220, DateTimeKind.Local).AddTicks(398),
-                            Departure = new DateTime(2023, 1, 28, 18, 22, 39, 203, DateTimeKind.Local).AddTicks(5074),
+                            Arrival = new DateTime(2023, 1, 29, 20, 28, 46, 89, DateTimeKind.Utc).AddTicks(442),
+                            Departure = new DateTime(2023, 1, 29, 4, 17, 23, 638, DateTimeKind.Utc).AddTicks(96),
                             FromId = new Guid("d3eb5f43-d318-8d5d-13be-3d6c53b5c287"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("a46450b9-7d53-cbbc-b12a-5f40fe56fbf7")
@@ -1268,8 +1250,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("73a53dd8-629e-7eee-db91-8cdc60684b67"),
-                            Arrival = new DateTime(2023, 1, 17, 1, 34, 27, 451, DateTimeKind.Local).AddTicks(5837),
-                            Departure = new DateTime(2023, 1, 16, 22, 2, 32, 251, DateTimeKind.Local).AddTicks(8107),
+                            Arrival = new DateTime(2023, 1, 18, 0, 23, 56, 320, DateTimeKind.Utc).AddTicks(5873),
+                            Departure = new DateTime(2023, 1, 17, 7, 57, 16, 686, DateTimeKind.Utc).AddTicks(3125),
                             FromId = new Guid("bec3b223-ab01-6d60-c952-23cef257312d"),
                             PlaneId = new Guid("85bb2a8f-44bc-0303-7f3c-f582a2c42134"),
                             ToId = new Guid("ae29c1b6-3162-e02c-a235-a77369338165")
@@ -1277,8 +1259,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c9216123-d766-5465-5a3e-74f302ac8f9b"),
-                            Arrival = new DateTime(2023, 1, 11, 5, 20, 26, 930, DateTimeKind.Local).AddTicks(2037),
-                            Departure = new DateTime(2023, 1, 11, 2, 10, 37, 941, DateTimeKind.Local).AddTicks(243),
+                            Arrival = new DateTime(2023, 1, 12, 4, 9, 55, 799, DateTimeKind.Utc).AddTicks(2068),
+                            Departure = new DateTime(2023, 1, 11, 12, 5, 22, 375, DateTimeKind.Utc).AddTicks(5258),
                             FromId = new Guid("1c685168-a6d6-10c7-3594-1264cfe88c5d"),
                             PlaneId = new Guid("5ea81455-0ff2-cf92-8e8d-954a8d558734"),
                             ToId = new Guid("49fc59bc-fc35-e2ff-5f0a-ceaf0939b700")
@@ -1286,8 +1268,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("77883dbe-2043-98a1-ef26-c7132db5db84"),
-                            Arrival = new DateTime(2023, 1, 3, 0, 47, 18, 984, DateTimeKind.Local).AddTicks(1560),
-                            Departure = new DateTime(2023, 1, 2, 20, 55, 38, 940, DateTimeKind.Local).AddTicks(1669),
+                            Arrival = new DateTime(2023, 1, 3, 23, 36, 47, 853, DateTimeKind.Utc).AddTicks(1628),
+                            Departure = new DateTime(2023, 1, 3, 6, 50, 23, 374, DateTimeKind.Utc).AddTicks(6703),
                             FromId = new Guid("a1747828-9ca1-9463-627b-a071f0553fe6"),
                             PlaneId = new Guid("5ea81455-0ff2-cf92-8e8d-954a8d558734"),
                             ToId = new Guid("3fa7775f-d4c2-fe4f-29b4-2c90f262a20f")
@@ -1295,8 +1277,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("e9175281-bb5e-ccbb-5dab-af95d9642499"),
-                            Arrival = new DateTime(2023, 1, 11, 20, 5, 1, 285, DateTimeKind.Local).AddTicks(3674),
-                            Departure = new DateTime(2023, 1, 11, 16, 46, 6, 578, DateTimeKind.Local).AddTicks(3198),
+                            Arrival = new DateTime(2023, 1, 12, 18, 54, 30, 154, DateTimeKind.Utc).AddTicks(2997),
+                            Departure = new DateTime(2023, 1, 12, 2, 40, 51, 12, DateTimeKind.Utc).AddTicks(7859),
                             FromId = new Guid("58fd3a9c-75dd-c357-b3e1-04749f29a7dc"),
                             PlaneId = new Guid("8538059f-1613-ae06-5eff-b46a68ce6415"),
                             ToId = new Guid("df70e319-c4cd-9963-dde7-ad5496c66e77")
@@ -1304,8 +1286,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("dfad176a-f7d4-16b3-d535-2ea47d3dea71"),
-                            Arrival = new DateTime(2023, 1, 13, 7, 26, 49, 710, DateTimeKind.Local).AddTicks(5520),
-                            Departure = new DateTime(2023, 1, 13, 3, 40, 56, 252, DateTimeKind.Local).AddTicks(6981),
+                            Arrival = new DateTime(2023, 1, 14, 6, 16, 18, 579, DateTimeKind.Utc).AddTicks(4847),
+                            Departure = new DateTime(2023, 1, 13, 13, 35, 40, 687, DateTimeKind.Utc).AddTicks(1644),
                             FromId = new Guid("413e5611-0f3b-4b29-918e-9e2b8daf0717"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("e1f4bf2b-5b92-2417-30c1-6366da03f928")
@@ -1313,8 +1295,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("7e187b92-5053-ebb7-5616-d2c36e163b6a"),
-                            Arrival = new DateTime(2023, 1, 13, 8, 50, 50, 100, DateTimeKind.Local).AddTicks(8204),
-                            Departure = new DateTime(2023, 1, 13, 5, 31, 56, 690, DateTimeKind.Local).AddTicks(9275),
+                            Arrival = new DateTime(2023, 1, 14, 7, 40, 18, 969, DateTimeKind.Utc).AddTicks(7528),
+                            Departure = new DateTime(2023, 1, 13, 15, 26, 41, 125, DateTimeKind.Utc).AddTicks(3937),
                             FromId = new Guid("20a683ad-9e6c-cdac-5b20-17e29fff1684"),
                             PlaneId = new Guid("5ea81455-0ff2-cf92-8e8d-954a8d558734"),
                             ToId = new Guid("413e5611-0f3b-4b29-918e-9e2b8daf0717")
@@ -1322,8 +1304,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("f1807687-275c-2739-c33c-52deeed89c94"),
-                            Arrival = new DateTime(2022, 12, 31, 21, 5, 45, 301, DateTimeKind.Local).AddTicks(7286),
-                            Departure = new DateTime(2022, 12, 31, 17, 58, 46, 122, DateTimeKind.Local).AddTicks(514),
+                            Arrival = new DateTime(2023, 1, 1, 19, 55, 14, 170, DateTimeKind.Utc).AddTicks(6646),
+                            Departure = new DateTime(2023, 1, 1, 3, 53, 30, 556, DateTimeKind.Utc).AddTicks(5194),
                             FromId = new Guid("9056b5bc-f2fc-6ffa-f56a-f5701226825e"),
                             PlaneId = new Guid("0aac9aea-970d-4c24-2c52-10626a95e60f"),
                             ToId = new Guid("7108d887-76ee-5bd3-e742-f4ec88a01684")
@@ -1331,8 +1313,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("e05b1e7e-270e-07af-845c-a0dd170a0597"),
-                            Arrival = new DateTime(2023, 1, 16, 10, 59, 30, 487, DateTimeKind.Local).AddTicks(1340),
-                            Departure = new DateTime(2023, 1, 16, 7, 39, 29, 61, DateTimeKind.Local).AddTicks(3797),
+                            Arrival = new DateTime(2023, 1, 17, 9, 48, 59, 356, DateTimeKind.Utc).AddTicks(638),
+                            Departure = new DateTime(2023, 1, 16, 17, 34, 13, 495, DateTimeKind.Utc).AddTicks(8446),
                             FromId = new Guid("83f8f41f-7a58-4370-c478-c687d2de44a8"),
                             PlaneId = new Guid("4974a191-133c-3a0b-2097-9c0ecb31bea7"),
                             ToId = new Guid("b93332e1-21e1-85a9-ffd5-81afd50083cb")
@@ -1340,8 +1322,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("e480d992-3d80-d59f-a808-1d0b89095725"),
-                            Arrival = new DateTime(2023, 1, 17, 3, 50, 28, 411, DateTimeKind.Local).AddTicks(3407),
-                            Departure = new DateTime(2023, 1, 17, 0, 30, 11, 72, DateTimeKind.Local).AddTicks(8584),
+                            Arrival = new DateTime(2023, 1, 18, 2, 39, 57, 280, DateTimeKind.Utc).AddTicks(2701),
+                            Departure = new DateTime(2023, 1, 17, 10, 24, 55, 507, DateTimeKind.Utc).AddTicks(3231),
                             FromId = new Guid("24236ed8-e2af-45ff-95ce-c77cc793f831"),
                             PlaneId = new Guid("85bb2a8f-44bc-0303-7f3c-f582a2c42134"),
                             ToId = new Guid("5352ba8c-9e8d-346f-bfff-a8842dc7947f")
@@ -1349,8 +1331,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("01b2e03e-ced7-fd96-d389-7d7d68eb44db"),
-                            Arrival = new DateTime(2023, 1, 14, 18, 14, 17, 691, DateTimeKind.Local).AddTicks(4181),
-                            Departure = new DateTime(2023, 1, 14, 14, 53, 39, 419, DateTimeKind.Local).AddTicks(1511),
+                            Arrival = new DateTime(2023, 1, 15, 17, 3, 46, 560, DateTimeKind.Utc).AddTicks(3469),
+                            Departure = new DateTime(2023, 1, 15, 0, 48, 23, 853, DateTimeKind.Utc).AddTicks(6155),
                             FromId = new Guid("d6228bf9-3a5c-8357-ab65-3bdc7306fd24"),
                             PlaneId = new Guid("0aac9aea-970d-4c24-2c52-10626a95e60f"),
                             ToId = new Guid("49b6227d-c666-e240-0bfc-fb6cefe517c1")
@@ -1358,8 +1340,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("d28254dc-008e-72ae-7ca8-29f4a253f9ce"),
-                            Arrival = new DateTime(2023, 1, 16, 21, 10, 44, 15, DateTimeKind.Local).AddTicks(4082),
-                            Departure = new DateTime(2023, 1, 16, 17, 13, 44, 693, DateTimeKind.Local).AddTicks(4617),
+                            Arrival = new DateTime(2023, 1, 17, 20, 0, 12, 884, DateTimeKind.Utc).AddTicks(3426),
+                            Departure = new DateTime(2023, 1, 17, 3, 8, 29, 127, DateTimeKind.Utc).AddTicks(9289),
                             FromId = new Guid("6d6c12e3-4e9a-a2d5-218b-52dda8a12ee0"),
                             PlaneId = new Guid("85bb2a8f-44bc-0303-7f3c-f582a2c42134"),
                             ToId = new Guid("4fd05d6c-3951-3e49-377b-1830a850b833")
@@ -1367,8 +1349,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("8da07ed4-1d20-4912-15bf-167aef628b2f"),
-                            Arrival = new DateTime(2023, 1, 4, 6, 0, 30, 942, DateTimeKind.Local).AddTicks(7722),
-                            Departure = new DateTime(2023, 1, 4, 2, 49, 39, 952, DateTimeKind.Local).AddTicks(800),
+                            Arrival = new DateTime(2023, 1, 5, 4, 49, 59, 811, DateTimeKind.Utc).AddTicks(7004),
+                            Departure = new DateTime(2023, 1, 4, 12, 44, 24, 386, DateTimeKind.Utc).AddTicks(5441),
                             FromId = new Guid("58f66ccb-a3c8-a581-680e-7d1154310fc7"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("edc1402a-3370-f890-284b-e9c5ef2b12eb")
@@ -1376,8 +1358,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("8953e056-98c6-0d4a-17e5-7a075907d5e2"),
-                            Arrival = new DateTime(2023, 1, 13, 18, 57, 19, 781, DateTimeKind.Local).AddTicks(1376),
-                            Departure = new DateTime(2023, 1, 13, 15, 44, 58, 61, DateTimeKind.Local).AddTicks(7664),
+                            Arrival = new DateTime(2023, 1, 14, 17, 46, 48, 650, DateTimeKind.Utc).AddTicks(650),
+                            Departure = new DateTime(2023, 1, 14, 1, 39, 42, 496, DateTimeKind.Utc).AddTicks(2301),
                             FromId = new Guid("f83d95af-1eb3-3cb0-c3ab-016015fbd6a1"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("58f66ccb-a3c8-a581-680e-7d1154310fc7")
@@ -1385,8 +1367,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("7a13e967-f1b2-9e6e-b45f-a1204d7e9d4d"),
-                            Arrival = new DateTime(2023, 1, 9, 1, 32, 8, 26, DateTimeKind.Local).AddTicks(9787),
-                            Departure = new DateTime(2023, 1, 8, 22, 13, 4, 536, DateTimeKind.Local).AddTicks(7595),
+                            Arrival = new DateTime(2023, 1, 10, 0, 21, 36, 895, DateTimeKind.Utc).AddTicks(9055),
+                            Departure = new DateTime(2023, 1, 9, 8, 7, 48, 971, DateTimeKind.Utc).AddTicks(2229),
                             FromId = new Guid("bc267cd5-ce98-812f-7dfc-e62f3bd1d180"),
                             PlaneId = new Guid("85bb2a8f-44bc-0303-7f3c-f582a2c42134"),
                             ToId = new Guid("32a0e9d6-4031-5a92-8580-8b7ff8f1dc29")
@@ -1394,8 +1376,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("739bdafd-5a95-4db6-eadb-ea4d62eef73f"),
-                            Arrival = new DateTime(2023, 1, 23, 14, 59, 37, 732, DateTimeKind.Local).AddTicks(8171),
-                            Departure = new DateTime(2023, 1, 23, 11, 8, 5, 844, DateTimeKind.Local).AddTicks(8872),
+                            Arrival = new DateTime(2023, 1, 24, 13, 49, 6, 601, DateTimeKind.Utc).AddTicks(7595),
+                            Departure = new DateTime(2023, 1, 23, 21, 2, 50, 279, DateTimeKind.Utc).AddTicks(3584),
                             FromId = new Guid("964de9f9-e59c-63d9-f92b-ecbe6651c609"),
                             PlaneId = new Guid("5ea81455-0ff2-cf92-8e8d-954a8d558734"),
                             ToId = new Guid("49b6227d-c666-e240-0bfc-fb6cefe517c1")
@@ -1403,8 +1385,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("e6d88563-890c-9438-4012-5dd3eb6a0e78"),
-                            Arrival = new DateTime(2023, 1, 14, 0, 2, 41, 301, DateTimeKind.Local).AddTicks(6936),
-                            Departure = new DateTime(2023, 1, 13, 20, 39, 46, 148, DateTimeKind.Local).AddTicks(1016),
+                            Arrival = new DateTime(2023, 1, 14, 22, 52, 10, 170, DateTimeKind.Utc).AddTicks(6238),
+                            Departure = new DateTime(2023, 1, 14, 6, 34, 30, 582, DateTimeKind.Utc).AddTicks(5668),
                             FromId = new Guid("edc1402a-3370-f890-284b-e9c5ef2b12eb"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("4cabc058-9ade-47a4-dbf6-e4ed2c99c9c5")
@@ -1412,8 +1394,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("d2b783c9-8fea-0da5-f546-deeace9954c2"),
-                            Arrival = new DateTime(2023, 1, 2, 14, 15, 34, 909, DateTimeKind.Local).AddTicks(3188),
-                            Departure = new DateTime(2023, 1, 2, 10, 25, 47, 824, DateTimeKind.Local).AddTicks(7453),
+                            Arrival = new DateTime(2023, 1, 3, 13, 5, 3, 778, DateTimeKind.Utc).AddTicks(2484),
+                            Departure = new DateTime(2023, 1, 2, 20, 20, 32, 259, DateTimeKind.Utc).AddTicks(2101),
                             FromId = new Guid("6ae094dd-0331-6682-b745-30deecc85579"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("4fd05d6c-3951-3e49-377b-1830a850b833")
@@ -1421,8 +1403,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("798cc9aa-8376-c7e9-07f6-0f241c990120"),
-                            Arrival = new DateTime(2023, 1, 1, 2, 34, 45, 327, DateTimeKind.Local).AddTicks(6353),
-                            Departure = new DateTime(2022, 12, 31, 23, 26, 7, 935, DateTimeKind.Local).AddTicks(8916),
+                            Arrival = new DateTime(2023, 1, 2, 1, 24, 14, 196, DateTimeKind.Utc).AddTicks(5641),
+                            Departure = new DateTime(2023, 1, 1, 9, 20, 52, 370, DateTimeKind.Utc).AddTicks(3560),
                             FromId = new Guid("f83d95af-1eb3-3cb0-c3ab-016015fbd6a1"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("03c9f600-7b8a-832c-6b08-84e780aadc91")
@@ -1430,8 +1412,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("e87ecc4a-d11c-b5b9-7b94-c53a981fba2b"),
-                            Arrival = new DateTime(2023, 1, 10, 12, 27, 1, 447, DateTimeKind.Local).AddTicks(6415),
-                            Departure = new DateTime(2023, 1, 10, 8, 40, 22, 378, DateTimeKind.Local).AddTicks(2268),
+                            Arrival = new DateTime(2023, 1, 11, 11, 16, 30, 316, DateTimeKind.Utc).AddTicks(5769),
+                            Departure = new DateTime(2023, 1, 10, 18, 35, 6, 812, DateTimeKind.Utc).AddTicks(6945),
                             FromId = new Guid("b805d93f-4168-a614-c8e2-a48401d53a6a"),
                             PlaneId = new Guid("0aac9aea-970d-4c24-2c52-10626a95e60f"),
                             ToId = new Guid("58f66ccb-a3c8-a581-680e-7d1154310fc7")
@@ -1439,8 +1421,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c6cf4fee-ffb1-a153-7866-d8eb315ffc0d"),
-                            Arrival = new DateTime(2023, 1, 16, 9, 20, 21, 442, DateTimeKind.Local).AddTicks(8034),
-                            Departure = new DateTime(2023, 1, 16, 6, 13, 7, 603, DateTimeKind.Local).AddTicks(6993),
+                            Arrival = new DateTime(2023, 1, 17, 8, 9, 50, 311, DateTimeKind.Utc).AddTicks(7286),
+                            Departure = new DateTime(2023, 1, 16, 16, 7, 52, 38, DateTimeKind.Utc).AddTicks(1619),
                             FromId = new Guid("236db095-f9d4-dfb6-ee3b-935e5aca2f06"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("3a697dc0-d59e-9309-f165-e19bdb903e73")
@@ -1448,8 +1430,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("ea4a618b-7a83-f547-baae-edd5415c7caf"),
-                            Arrival = new DateTime(2023, 1, 24, 4, 2, 5, 418, DateTimeKind.Local).AddTicks(5680),
-                            Departure = new DateTime(2023, 1, 24, 0, 3, 5, 537, DateTimeKind.Local).AddTicks(1918),
+                            Arrival = new DateTime(2023, 1, 25, 2, 51, 34, 287, DateTimeKind.Utc).AddTicks(4926),
+                            Departure = new DateTime(2023, 1, 24, 9, 57, 49, 971, DateTimeKind.Utc).AddTicks(6541),
                             FromId = new Guid("5f8063e9-390f-3ed6-f20f-028edf2b8e95"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("5b6aed0b-8d10-48b9-5510-68d91365661a")
@@ -1457,8 +1439,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("4eed2d03-bf67-1ebe-c819-598c3362ee84"),
-                            Arrival = new DateTime(2023, 1, 14, 22, 3, 33, 124, DateTimeKind.Local).AddTicks(7495),
-                            Departure = new DateTime(2023, 1, 14, 18, 3, 15, 483, DateTimeKind.Local).AddTicks(157),
+                            Arrival = new DateTime(2023, 1, 15, 20, 53, 1, 993, DateTimeKind.Utc).AddTicks(6735),
+                            Departure = new DateTime(2023, 1, 15, 3, 57, 59, 917, DateTimeKind.Utc).AddTicks(4777),
                             FromId = new Guid("9988c5b2-6ac4-b3cf-ee49-952691688933"),
                             PlaneId = new Guid("b1fe57c4-b9b2-966c-d9b7-952174784d79"),
                             ToId = new Guid("92f94545-ce92-123d-9836-f7b9f4b948bb")
@@ -1466,8 +1448,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("15eab8bd-03ef-5d80-6def-e1c9ff88345d"),
-                            Arrival = new DateTime(2023, 1, 22, 8, 53, 58, 125, DateTimeKind.Local).AddTicks(9302),
-                            Departure = new DateTime(2023, 1, 22, 5, 14, 23, 86, DateTimeKind.Local).AddTicks(4291),
+                            Arrival = new DateTime(2023, 1, 23, 7, 43, 26, 994, DateTimeKind.Utc).AddTicks(8582),
+                            Departure = new DateTime(2023, 1, 22, 15, 9, 7, 520, DateTimeKind.Utc).AddTicks(8931),
                             FromId = new Guid("e0824043-de98-9dfb-6d08-49bfd177c2cc"),
                             PlaneId = new Guid("67b6c90e-8091-4640-01e1-660d1d554352"),
                             ToId = new Guid("0ecb763b-465f-daef-3c12-8d23c6a218c1")
@@ -1475,8 +1457,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("499494f1-fa0e-2b8e-473c-4b5a66457502"),
-                            Arrival = new DateTime(2023, 1, 6, 20, 24, 23, 422, DateTimeKind.Local).AddTicks(785),
-                            Departure = new DateTime(2023, 1, 6, 16, 58, 46, 767, DateTimeKind.Local).AddTicks(5732),
+                            Arrival = new DateTime(2023, 1, 7, 19, 13, 52, 290, DateTimeKind.Utc).AddTicks(9999),
+                            Departure = new DateTime(2023, 1, 7, 2, 53, 31, 202, DateTimeKind.Utc).AddTicks(339),
                             FromId = new Guid("3c52929b-3de6-7026-c31d-7e095c625b2e"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("b52028ea-9cfd-bdaf-3f49-6b0b069d95c1")
@@ -1484,8 +1466,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c2772a5b-d933-26b9-3f11-ca82d5cb2356"),
-                            Arrival = new DateTime(2023, 1, 3, 3, 50, 20, 431, DateTimeKind.Local).AddTicks(3283),
-                            Departure = new DateTime(2023, 1, 3, 0, 7, 36, 293, DateTimeKind.Local).AddTicks(6090),
+                            Arrival = new DateTime(2023, 1, 4, 2, 39, 49, 300, DateTimeKind.Utc).AddTicks(2493),
+                            Departure = new DateTime(2023, 1, 3, 10, 2, 20, 728, DateTimeKind.Utc).AddTicks(695),
                             FromId = new Guid("6d6c12e3-4e9a-a2d5-218b-52dda8a12ee0"),
                             PlaneId = new Guid("7f29b357-48f2-2d74-d8d9-9108fe8a0ff9"),
                             ToId = new Guid("49b6227d-c666-e240-0bfc-fb6cefe517c1")
@@ -1493,8 +1475,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("6f95b226-4298-5bbe-62a5-ff4b16966a1c"),
-                            Arrival = new DateTime(2023, 1, 16, 16, 31, 51, 676, DateTimeKind.Local).AddTicks(6630),
-                            Departure = new DateTime(2023, 1, 16, 12, 46, 55, 784, DateTimeKind.Local).AddTicks(5555),
+                            Arrival = new DateTime(2023, 1, 17, 15, 21, 20, 545, DateTimeKind.Utc).AddTicks(5836),
+                            Departure = new DateTime(2023, 1, 16, 22, 41, 40, 219, DateTimeKind.Utc).AddTicks(157),
                             FromId = new Guid("e901d463-5eba-a201-1af6-d52ea3ed1eca"),
                             PlaneId = new Guid("0aac9aea-970d-4c24-2c52-10626a95e60f"),
                             ToId = new Guid("f83d95af-1eb3-3cb0-c3ab-016015fbd6a1")
@@ -1502,8 +1484,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("d7812b07-7a91-ab51-6d95-b24c8e3478e2"),
-                            Arrival = new DateTime(2023, 1, 11, 15, 43, 20, 260, DateTimeKind.Local).AddTicks(5923),
-                            Departure = new DateTime(2023, 1, 11, 11, 44, 46, 310, DateTimeKind.Local).AddTicks(7188),
+                            Arrival = new DateTime(2023, 1, 12, 14, 32, 49, 129, DateTimeKind.Utc).AddTicks(5164),
+                            Departure = new DateTime(2023, 1, 11, 21, 39, 30, 745, DateTimeKind.Utc).AddTicks(1809),
                             FromId = new Guid("e8a69852-6982-4bc2-d038-659d7459d2d2"),
                             PlaneId = new Guid("8538059f-1613-ae06-5eff-b46a68ce6415"),
                             ToId = new Guid("df70e319-c4cd-9963-dde7-ad5496c66e77")
@@ -1511,8 +1493,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("37ca6cdd-34be-39b9-4506-e81d2d1e8613"),
-                            Arrival = new DateTime(2023, 1, 2, 6, 15, 0, 764, DateTimeKind.Local).AddTicks(3111),
-                            Departure = new DateTime(2023, 1, 2, 2, 53, 30, 132, DateTimeKind.Local).AddTicks(4923),
+                            Arrival = new DateTime(2023, 1, 3, 5, 4, 29, 633, DateTimeKind.Utc).AddTicks(2247),
+                            Departure = new DateTime(2023, 1, 2, 12, 48, 14, 566, DateTimeKind.Utc).AddTicks(9491),
                             FromId = new Guid("2bb1ab03-90f2-27ec-b0e6-7520e2248cde"),
                             PlaneId = new Guid("ccfcc9e2-5809-8aba-7fb8-87de374bd9ea"),
                             ToId = new Guid("efbff604-380c-8625-c308-218f15bcd476")
@@ -1520,8 +1502,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("ff4c0ff5-6287-3af1-333f-89d8392abfb7"),
-                            Arrival = new DateTime(2023, 1, 17, 3, 13, 40, 534, DateTimeKind.Local).AddTicks(8832),
-                            Departure = new DateTime(2023, 1, 16, 23, 41, 17, 71, DateTimeKind.Local).AddTicks(9306),
+                            Arrival = new DateTime(2023, 1, 18, 2, 3, 9, 403, DateTimeKind.Utc).AddTicks(7963),
+                            Departure = new DateTime(2023, 1, 17, 9, 36, 1, 506, DateTimeKind.Utc).AddTicks(3871),
                             FromId = new Guid("413e5611-0f3b-4b29-918e-9e2b8daf0717"),
                             PlaneId = new Guid("85bb2a8f-44bc-0303-7f3c-f582a2c42134"),
                             ToId = new Guid("6ae094dd-0331-6682-b745-30deecc85579")
@@ -1529,8 +1511,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("2ec98e27-1561-cef1-bb93-ce8e1ce75c7e"),
-                            Arrival = new DateTime(2023, 1, 14, 14, 45, 59, 99, DateTimeKind.Local).AddTicks(2936),
-                            Departure = new DateTime(2023, 1, 14, 11, 7, 16, 271, DateTimeKind.Local).AddTicks(3933),
+                            Arrival = new DateTime(2023, 1, 15, 13, 35, 27, 968, DateTimeKind.Utc).AddTicks(2064),
+                            Departure = new DateTime(2023, 1, 14, 21, 2, 0, 705, DateTimeKind.Utc).AddTicks(8497),
                             FromId = new Guid("58fd3a9c-75dd-c357-b3e1-04749f29a7dc"),
                             PlaneId = new Guid("8538059f-1613-ae06-5eff-b46a68ce6415"),
                             ToId = new Guid("213608f2-53eb-fa3c-064a-26cd5eaaa713")
@@ -1538,8 +1520,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("445fc712-f4f3-5cc7-f834-82d43dcd8082"),
-                            Arrival = new DateTime(2023, 1, 17, 14, 21, 28, 549, DateTimeKind.Local).AddTicks(9706),
-                            Departure = new DateTime(2023, 1, 17, 10, 48, 33, 336, DateTimeKind.Local).AddTicks(3871),
+                            Arrival = new DateTime(2023, 1, 18, 13, 10, 57, 418, DateTimeKind.Utc).AddTicks(8870),
+                            Departure = new DateTime(2023, 1, 17, 20, 43, 17, 770, DateTimeKind.Utc).AddTicks(8453),
                             FromId = new Guid("98e8bef7-2979-89c1-ee55-19a9d64fa775"),
                             PlaneId = new Guid("4974a191-133c-3a0b-2097-9c0ecb31bea7"),
                             ToId = new Guid("289110d0-98b3-a713-2fdd-59bf53f22d95")
@@ -1547,8 +1529,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("49baac77-421d-3962-679a-73d07215c76a"),
-                            Arrival = new DateTime(2023, 1, 1, 11, 21, 2, 176, DateTimeKind.Local).AddTicks(7408),
-                            Departure = new DateTime(2023, 1, 1, 8, 14, 47, 302, DateTimeKind.Local).AddTicks(8251),
+                            Arrival = new DateTime(2023, 1, 2, 10, 10, 31, 45, DateTimeKind.Utc).AddTicks(6506),
+                            Departure = new DateTime(2023, 1, 1, 18, 9, 31, 737, DateTimeKind.Utc).AddTicks(2800),
                             FromId = new Guid("cb721af5-b1f6-627b-1f02-5836a442b463"),
                             PlaneId = new Guid("0aac9aea-970d-4c24-2c52-10626a95e60f"),
                             ToId = new Guid("413e5611-0f3b-4b29-918e-9e2b8daf0717")
@@ -1556,8 +1538,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("ba4c5ec2-1ade-fbdb-6712-86c7939a1ba4"),
-                            Arrival = new DateTime(2023, 1, 15, 3, 9, 3, 393, DateTimeKind.Local).AddTicks(882),
-                            Departure = new DateTime(2023, 1, 14, 23, 21, 31, 441, DateTimeKind.Local).AddTicks(343),
+                            Arrival = new DateTime(2023, 1, 16, 1, 58, 32, 261, DateTimeKind.Utc).AddTicks(9976),
+                            Departure = new DateTime(2023, 1, 15, 9, 16, 15, 875, DateTimeKind.Utc).AddTicks(4890),
                             FromId = new Guid("0ecb763b-465f-daef-3c12-8d23c6a218c1"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("0ecb763b-465f-daef-3c12-8d23c6a218c1")
@@ -1565,8 +1547,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("030e9991-b8ca-17b9-e6b7-2bd5fab54d6e"),
-                            Arrival = new DateTime(2023, 1, 3, 14, 58, 9, 23, DateTimeKind.Local).AddTicks(940),
-                            Departure = new DateTime(2023, 1, 3, 11, 41, 17, 855, DateTimeKind.Local).AddTicks(4623),
+                            Arrival = new DateTime(2023, 1, 4, 13, 47, 37, 892, DateTimeKind.Utc).AddTicks(28),
+                            Departure = new DateTime(2023, 1, 3, 21, 36, 2, 289, DateTimeKind.Utc).AddTicks(9167),
                             FromId = new Guid("58fd3a9c-75dd-c357-b3e1-04749f29a7dc"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("26d9ff62-1887-9a43-cb94-740d541f22ce")
@@ -1574,8 +1556,8 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("09ed88ff-7adf-c6ac-ef97-6fc64e31c43d"),
-                            Arrival = new DateTime(2023, 1, 20, 12, 27, 36, 339, DateTimeKind.Local).AddTicks(6008),
-                            Departure = new DateTime(2023, 1, 20, 9, 22, 19, 13, DateTimeKind.Local).AddTicks(5881),
+                            Arrival = new DateTime(2023, 1, 21, 11, 17, 5, 208, DateTimeKind.Utc).AddTicks(5116),
+                            Departure = new DateTime(2023, 1, 20, 19, 17, 3, 448, DateTimeKind.Utc).AddTicks(435),
                             FromId = new Guid("f83d95af-1eb3-3cb0-c3ab-016015fbd6a1"),
                             PlaneId = new Guid("ccfcc9e2-5809-8aba-7fb8-87de374bd9ea"),
                             ToId = new Guid("810a14c6-b7bc-6697-3c28-e03b5092541c")
@@ -1583,231 +1565,300 @@ namespace AviaSales.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("f25a5a81-e599-36cd-6b98-89dce5921121"),
-                            Arrival = new DateTime(2023, 1, 23, 20, 1, 41, 600, DateTimeKind.Local).AddTicks(2715),
-                            Departure = new DateTime(2023, 1, 23, 16, 9, 58, 532, DateTimeKind.Local).AddTicks(4706),
+                            Arrival = new DateTime(2023, 1, 24, 18, 51, 10, 469, DateTimeKind.Utc).AddTicks(1815),
+                            Departure = new DateTime(2023, 1, 24, 2, 4, 42, 966, DateTimeKind.Utc).AddTicks(9256),
                             FromId = new Guid("3a697dc0-d59e-9309-f165-e19bdb903e73"),
                             PlaneId = new Guid("c29d1349-d2e0-96e9-1366-ead1db91d7c6"),
                             ToId = new Guid("32a0e9d6-4031-5a92-8580-8b7ff8f1dc29")
                         });
                 });
 
-            modelBuilder.Entity("AviaSales.Domain.Entities.Ticket<AviaSales.Infrastructure.Persistence.User, System.Guid>", b =>
+            modelBuilder.Entity("AviaSales.Domain.Entities.Ticket<AviaSales.Infrastructure.Persistence.Models.User, System.Guid>", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("ownerid");
 
                     b.Property<int>("SeatNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("seatnumber");
 
                     b.Property<int>("TicketStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("ticketstatus");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_tickets");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("OwnerId")
+                        .HasDatabaseName("ix_tickets_ownerid");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("tickets", "public");
                 });
 
-            modelBuilder.Entity("AviaSales.Infrastructure.Persistence.User", b =>
+            modelBuilder.Entity("AviaSales.Infrastructure.Persistence.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("accessfailedcount");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("concurrencystamp");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("email");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("emailconfirmed");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("lockoutenabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("lockoutend");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalizedemail");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalizedusername");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("passwordhash");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("phonenumber");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("phonenumberconfirmed");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("securitystamp");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean")
+                        .HasColumnName("twofactorenabled");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("username");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_aspnetusers");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("AspNetUsers", "public");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("557710e6-1b91-4344-8bc4-a75c68a5a165"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "fb7ce163-1e87-4523-b56a-4d7776f68fbf",
+                            Email = "awestruck31@mail.ru",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "AWESTRUCK31@MAIL.RU",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHfQOb8QRBM0K6INFwUyQUMslYXnYCNGRd86NgXjDjDpOo3jJnfujNDN/YQ9RkoPZA==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("concurrencystamp");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("name");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalizedname");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_aspnetroles");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("AspNetRoles", "public");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("claimtype");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("claimvalue");
 
                     b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("roleid");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_aspnetroleclaims");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_aspnetroleclaims_roleid");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("AspNetRoleClaims", "public");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("claimtype");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("claimvalue");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("userid");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("pk_aspnetuserclaims");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_aspnetuserclaims_userid");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("AspNetUserClaims", "public");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text")
+                        .HasColumnName("loginprovider");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text")
+                        .HasColumnName("providerkey");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("providerdisplayname");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("userid");
 
-                    b.HasKey("LoginProvider", "ProviderKey");
+                    b.HasKey("LoginProvider", "ProviderKey")
+                        .HasName("pk_aspnetuserlogins");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_aspnetuserlogins_userid");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("AspNetUserLogins", "public");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("userid");
 
                     b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("roleid");
 
-                    b.HasKey("UserId", "RoleId");
+                    b.HasKey("UserId", "RoleId")
+                        .HasName("pk_aspnetuserroles");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_aspnetuserroles_roleid");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("AspNetUserRoles", "public");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid")
+                        .HasColumnName("userid");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text")
+                        .HasColumnName("loginprovider");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text")
+                        .HasColumnName("value");
 
-                    b.HasKey("UserId", "LoginProvider", "Name");
+                    b.HasKey("UserId", "LoginProvider", "Name")
+                        .HasName("pk_aspnetusertokens");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("AspNetUserTokens", "public");
                 });
 
             modelBuilder.Entity("AviaSales.Domain.Entities.Route", b =>
@@ -1816,19 +1867,22 @@ namespace AviaSales.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("FromId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_routes_locations_fromid");
 
                     b.HasOne("AviaSales.Domain.Entities.Plane", "Plane")
-                        .WithMany()
+                        .WithMany("Routes")
                         .HasForeignKey("PlaneId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_routes_plane_planeid");
 
                     b.HasOne("AviaSales.Domain.Entities.Location", "To")
                         .WithMany()
                         .HasForeignKey("ToId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_routes_locations_toid");
 
                     b.Navigation("From");
 
@@ -1837,13 +1891,14 @@ namespace AviaSales.Infrastructure.Migrations
                     b.Navigation("To");
                 });
 
-            modelBuilder.Entity("AviaSales.Domain.Entities.Ticket<AviaSales.Infrastructure.Persistence.User, System.Guid>", b =>
+            modelBuilder.Entity("AviaSales.Domain.Entities.Ticket<AviaSales.Infrastructure.Persistence.Models.User, System.Guid>", b =>
                 {
-                    b.HasOne("AviaSales.Infrastructure.Persistence.User", "Owner")
+                    b.HasOne("AviaSales.Infrastructure.Persistence.Models.User", "Owner")
                         .WithMany("Tickets")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_tickets_users_ownerid");
 
                     b.Navigation("Owner");
                 });
@@ -1854,25 +1909,28 @@ namespace AviaSales.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_aspnetroleclaims_aspnetroles_roleid");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("AviaSales.Infrastructure.Persistence.User", null)
+                    b.HasOne("AviaSales.Infrastructure.Persistence.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_aspnetuserclaims_aspnetusers_userid");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("AviaSales.Infrastructure.Persistence.User", null)
+                    b.HasOne("AviaSales.Infrastructure.Persistence.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_aspnetuserlogins_aspnetusers_userid");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
@@ -1881,25 +1939,33 @@ namespace AviaSales.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_aspnetuserroles_aspnetroles_roleid");
 
-                    b.HasOne("AviaSales.Infrastructure.Persistence.User", null)
+                    b.HasOne("AviaSales.Infrastructure.Persistence.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_aspnetuserroles_aspnetusers_userid");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("AviaSales.Infrastructure.Persistence.User", null)
+                    b.HasOne("AviaSales.Infrastructure.Persistence.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_aspnetusertokens_aspnetusers_userid");
                 });
 
-            modelBuilder.Entity("AviaSales.Infrastructure.Persistence.User", b =>
+            modelBuilder.Entity("AviaSales.Domain.Entities.Plane", b =>
+                {
+                    b.Navigation("Routes");
+                });
+
+            modelBuilder.Entity("AviaSales.Infrastructure.Persistence.Models.User", b =>
                 {
                     b.Navigation("Tickets");
                 });
