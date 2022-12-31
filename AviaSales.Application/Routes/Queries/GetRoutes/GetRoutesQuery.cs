@@ -1,5 +1,4 @@
-﻿using AviaSales.Application.Routes.Dto;
-using MediatR;
+﻿using MediatR;
 
 namespace AviaSales.Application.Routes.Queries.GetRoutes;
 

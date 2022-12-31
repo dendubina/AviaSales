@@ -1,4 +1,5 @@
-﻿using AviaSales.Application.Routes.Queries.GetRoutes;
+﻿using AviaSales.Application.Routes.Commands.CreateRoute;
+using AviaSales.Application.Routes.Queries.GetRoutes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,5 +20,13 @@ public class RoutesController : ControllerBase
     public async Task<IActionResult> GetRoutes([FromQuery] RouteParameters parameters)
     {
         return Ok(await _mediator.Send(new GetRoutesQuery(parameters)));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateRoute(CreateUpdateRouteDto model)
+    {
+        await _mediator.Send(new CreateRouteCommand(model));
+
+        return Ok();
     }
 }

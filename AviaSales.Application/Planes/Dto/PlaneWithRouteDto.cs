@@ -1,11 +1,10 @@
-﻿namespace AviaSales.Application.Planes.Dto
+﻿namespace AviaSales.Application.Planes.Dto;
+
+public class PlaneWithRouteDto
 {
-    public class PlaneWithRouteDto
-    {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
 
-        public string? Model { get; set; }
+    public string? Model { get; set; }
 
-        public int SeatsCount { get; set; }
-    }
+    public int SeatsCount { get; set; }
 }

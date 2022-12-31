@@ -1,13 +1,13 @@
 ﻿using Autofac;
-using AviaSales.Application.Extensions;
+using AviaSales.Application.Common.Extensions;
 
-namespace AviaSales.Application
+namespace AviaSales.Application;
+
+public class ApplicationModule : Module
 {
-    public class ApplicationModule : Module
+    protected override void Load(ContainerBuilder builder)
     {
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.ConfigureMediatR();
-        }
+        builder.ConfigureMediatR();
+        builder.ConfigureFluentValidation();
     }
 }

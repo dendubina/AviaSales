@@ -2,9 +2,9 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AviaSales.Api.Extensions;
 using AviaSales.Application;
+using AviaSales.Domain.Entities;
 using AviaSales.Infrastructure;
 using AviaSales.Infrastructure.Persistence;
-using AviaSales.Infrastructure.Persistence.Models;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);

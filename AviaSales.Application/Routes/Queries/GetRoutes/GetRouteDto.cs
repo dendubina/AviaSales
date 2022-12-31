@@ -1,6 +1,6 @@
 ﻿using AviaSales.Application.Planes.Dto;
 
-namespace AviaSales.Application.Routes.Dto;
+namespace AviaSales.Application.Routes.Queries.GetRoutes;
 
 public class GetRouteDto
 {

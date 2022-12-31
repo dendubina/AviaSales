@@ -11,6 +11,8 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="dapper" Version="2.0.123" />
     <PackageReference Include="dapper.sqlbuilder" Version="2.0.78" />
+    <PackageReference Include="FluentValidation" Version="11.4.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />
     <PackageReference Include="mediatr" Version="11.1.0" />
     <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="9.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
@@ -24,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Routes\Commands\" />
+    <Folder Include="Tickets\Queries\" />
   </ItemGroup>
 
 </Project>
