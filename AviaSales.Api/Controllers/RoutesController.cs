@@ -1,4 +1,6 @@
 ﻿using AviaSales.Application.Routes.Commands.CreateRoute;
+using AviaSales.Application.Routes.Dto;
+using AviaSales.Application.Routes.Queries.GetRouteById;
 using AviaSales.Application.Routes.Queries.GetRoutes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +22,14 @@ public class RoutesController : ControllerBase
     public async Task<IActionResult> GetRoutes([FromQuery] RouteParameters parameters)
     {
         return Ok(await _mediator.Send(new GetRoutesQuery(parameters)));
+    }
+
+    [HttpGet("{id:guid}", Name = "RouteById")]
+    public async Task<IActionResult> GetRouteById(Guid id)
+    {
+        var result = await _mediator.Send(new GetRouteByIdQuery(id));
+
+        return result is null ? NotFound() : Ok(result);
     }
 
     [HttpPost]

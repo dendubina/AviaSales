@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using AviaSales.Application.Routes.Dto;
+using MediatR;
 
 namespace AviaSales.Application.Routes.Commands.CreateRoute;
 
-public class CreateRouteCommand : IRequest
+public class CreateRouteCommand : IRequest<Guid>
 {
     public CreateUpdateRouteDto CreateRouteDto { get; init; }
 

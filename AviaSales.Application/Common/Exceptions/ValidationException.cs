@@ -2,7 +2,7 @@
 
 namespace AviaSales.Application.Common.Exceptions;
 
-public class ValidationException : System.Exception
+public class ValidationException : Exception
 {
     public IDictionary<string, string[]> Errors { get; }
 

@@ -1,11 +1,10 @@
 ﻿using AviaSales.Application.Common.Models.Users;
 
-namespace AviaSales.Application.Common.Interfaces
-{
-    public interface IIdentityService
-    {
-        Task<UserProfile> SignInAsync(SignInModel model);
+namespace AviaSales.Application.Common.Interfaces;
 
-        Task<UserProfile> SignUpAsync(SignUpModel model);
-    }
+public interface IIdentityService
+{
+    Task<UserProfile> SignInAsync(SignInModel model);
+
+    Task<UserProfile> SignUpAsync(SignUpModel model);
 }

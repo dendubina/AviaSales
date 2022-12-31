@@ -1,4 +1,4 @@
-﻿namespace AviaSales.Application.Routes.Commands.CreateRoute;
+﻿namespace AviaSales.Application.Routes.Dto;
 
 public class CreateUpdateRouteDto
 {

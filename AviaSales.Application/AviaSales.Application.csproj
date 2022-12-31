@@ -25,8 +25,4 @@
     <ProjectReference Include="..\AviaSales.Domain\AviaSales.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Tickets\Queries\" />
-  </ItemGroup>
-
 </Project>

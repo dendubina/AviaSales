@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using AviaSales.Application.Planes.Dto;
+using AviaSales.Application.Routes.Dto;
 using Dapper;
 using MediatR;
 
@@ -35,8 +36,8 @@ internal class GetRoutesQueryHandler : IRequestHandler<GetRoutesQuery, IEnumerab
             queryBuilder.Where("s.name = @To", new { request.Parameters.To });
         }
 
-        var result = await _dbConnection.QueryAsync<GetRouteDto, PlaneWithRouteDto, GetRouteDto>(template.RawSql,
-            (route, plane) =>
+        var result = await _dbConnection
+            .QueryAsync<GetRouteDto, PlaneWithRouteDto, GetRouteDto>(template.RawSql, (route, plane) =>
             {
                 route.Plane = plane;
                 return route;

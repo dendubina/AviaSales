@@ -3,7 +3,7 @@ using MediatR;
 
 namespace AviaSales.Application.Routes.Commands.CreateRoute;
 
-internal class CreateRouteCommandHandler : IRequestHandler<CreateRouteCommand>
+internal class CreateRouteCommandHandler : IRequestHandler<CreateRouteCommand, Guid>
 {
     private readonly IDbConnection _dbConnection;
 
@@ -12,7 +12,7 @@ internal class CreateRouteCommandHandler : IRequestHandler<CreateRouteCommand>
         _dbConnection = dbConnection;
     }
 
-    public Task<Unit> Handle(CreateRouteCommand request, CancellationToken cancellationToken)
+    public Task<Guid> Handle(CreateRouteCommand request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
