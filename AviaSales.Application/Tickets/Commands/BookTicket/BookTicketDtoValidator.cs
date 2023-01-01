@@ -1,21 +1,24 @@
 ﻿using System.Data;
+using AviaSales.Application.Common.Extensions;
 using AviaSales.Application.Tickets.Dto;
 using Dapper;
 using FluentValidation;
 
-namespace AviaSales.Application.Tickets.Commands.CreateTicket;
+namespace AviaSales.Application.Tickets.Commands.BookTicket;
 
-internal class CreateTicketDtoValidator : AbstractValidator<CreateTicketDto>
+internal class BookTicketDtoValidator : AbstractValidator<BookTicketDto>
 {
     private readonly IDbConnection _dbConnection;
 
-    public CreateTicketDtoValidator(IDbConnection dbConnection)
+    public BookTicketDtoValidator(IDbConnection dbConnection)
     {
         _dbConnection = dbConnection;
         RuleLevelCascadeMode = CascadeMode.Stop;
 
         RuleFor(x => x.RouteId)
-            .NotEmpty();
+            .NotEmpty()
+            .MustAsync((routeId, _) => dbConnection.IsEntityExistsAsync("routes", routeId))
+            .WithMessage(model => $"Route with id '{model.RouteId}' not found");
 
         RuleFor(x => x.UserId)
             .NotEmpty();
@@ -30,12 +33,12 @@ internal class CreateTicketDtoValidator : AbstractValidator<CreateTicketDto>
 
     private async Task<bool> SeatExists(int selectedSeatNumber, Guid routeId)
     {
-        const string query = "SELECT planes.seatsCount FROM tickets " +
-                             $"JOIN routes r ON @{nameof(routeId)} = r.id " +
-                             "JOIN planes ON planes.id = r.planeId " +
+        const string query = "SELECT planes.seatsCount FROM routes " +
+                             "JOIN planes ON planes.id = routes.planeId " +
+                             $"WHERE routes.id = @{nameof(routeId)} " +
                              "LIMIT 1";
 
-        var seatsCount = await _dbConnection.QueryFirstAsync<int>(query, new { routeId });
+        var seatsCount = await _dbConnection.ExecuteScalarAsync<int>(query, new { routeId });
 
         return seatsCount >= selectedSeatNumber;
     }

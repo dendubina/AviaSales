@@ -1,27 +1,26 @@
-﻿using AviaSales.Application.Tickets.Commands.CreateTicket;
+﻿using AviaSales.Application.Tickets.Commands.BookTicket;
 using AviaSales.Application.Tickets.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AviaSales.Api.Controllers
+namespace AviaSales.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class TicketsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class TicketsController : ControllerBase
+    readonly IMediator _mediator;
+
+    public TicketsController(IMediator mediator)
     {
-        readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public TicketsController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+    [HttpPost]
+    public async Task<IActionResult> BookTicket(BookTicketDto model)
+    {
+        await _mediator.Send(new BookTicketCommand(model));
 
-        [HttpPost]
-        public async Task<IActionResult> CreateTicket(CreateTicketDto model)
-        {
-            await _mediator.Send(new CreateTicketCommand(model));
-
-            return Ok();
-        }
+        return Ok();
     }
 }

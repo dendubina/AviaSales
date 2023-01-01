@@ -13,7 +13,7 @@ internal class UpdateRouteCommandValidator : AbstractValidator<UpdateRouteComman
 
         RuleFor(x => x.Id)
             .NotEmpty()
-            .MustAsync(async (routeId, _) => await dbConnection.IsEntityExists("routes", routeId))
+            .MustAsync(async (routeId, _) => await dbConnection.IsEntityExistsAsync("routes", routeId))
             .WithMessage(model => $"Route with id '{model.Id}' doesn't exist");
 
         RuleFor(x => x.UpdateRouteDto)

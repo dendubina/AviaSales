@@ -15,15 +15,15 @@ internal class CreateUpdateRouteDtoValidator : AbstractValidator<CreateUpdateRou
             .GreaterThan(x => x.Departure);
 
         RuleFor(x => x.FromId)
-           .MustAsync(async (fromId, _) => await dbConnection.IsEntityExists("locations", fromId))
+           .MustAsync(async (fromId, _) => await dbConnection.IsEntityExistsAsync("locations", fromId))
            .WithMessage("'From' location doesn't exist");
 
         RuleFor(x => x.ToId)
-            .MustAsync(async (toId, _) => await dbConnection.IsEntityExists("locations", toId))
+            .MustAsync(async (toId, _) => await dbConnection.IsEntityExistsAsync("locations", toId))
             .WithMessage("'To' location doesn't exist");
 
         RuleFor(x => x.PlaneId)
-            .MustAsync(async (planeId, _) => await dbConnection.IsEntityExists("planes", planeId))
+            .MustAsync(async (planeId, _) => await dbConnection.IsEntityExistsAsync("planes", planeId))
             .WithMessage("Plane doesn't exists");
     }
 }

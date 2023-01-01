@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using AviaSales.Domain.Entities;
+using AviaSales.Infrastructure.Services.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 
     public AppDbContext(DbContextOptions options) : base(options)
     {
-
+        
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

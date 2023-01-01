@@ -5,7 +5,7 @@ namespace AviaSales.Application.Common.Extensions;
 
 internal static class DbConnectionExtensions
 {
-    internal static async Task<bool> IsEntityExists<TKey>(this IDbConnection dbConnection, string tableName, TKey primaryKey)
+    internal static async Task<bool> IsEntityExistsAsync<TKey>(this IDbConnection dbConnection, string tableName, TKey primaryKey)
         where TKey : IEquatable<TKey>
     {
         var query = $"SELECT * from {tableName} " +
