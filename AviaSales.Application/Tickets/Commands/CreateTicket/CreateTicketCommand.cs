@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AviaSales.Application.Tickets.Dto;
+using MediatR;
 
 namespace AviaSales.Application.Tickets.Commands.CreateTicket
 {

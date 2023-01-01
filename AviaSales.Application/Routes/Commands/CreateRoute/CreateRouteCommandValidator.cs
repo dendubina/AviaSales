@@ -8,9 +8,7 @@ namespace AviaSales.Application.Routes.Commands.CreateRoute
         public CreateRouteCommandValidator(IDbConnection dbConnection)
         {
             RuleFor(x => x.CreateRouteDto)
-                .NotNull();
-
-            RuleFor(x => x.CreateRouteDto)
+                .NotNull()
                 .SetValidator(new CreateUpdateRouteDtoValidator(dbConnection));
         }
     }

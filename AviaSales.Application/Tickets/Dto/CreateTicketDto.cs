@@ -1,4 +1,4 @@
-﻿namespace AviaSales.Application.Tickets.Commands.CreateTicket;
+﻿namespace AviaSales.Application.Tickets.Dto;
 
 public class CreateTicketDto
 {

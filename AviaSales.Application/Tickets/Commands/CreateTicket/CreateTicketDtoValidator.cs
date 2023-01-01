@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using AviaSales.Application.Tickets.Dto;
 using Dapper;
 using FluentValidation;
 

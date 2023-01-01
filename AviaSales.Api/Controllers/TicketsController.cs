@@ -1,4 +1,5 @@
 ﻿using AviaSales.Application.Tickets.Commands.CreateTicket;
+using AviaSales.Application.Tickets.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

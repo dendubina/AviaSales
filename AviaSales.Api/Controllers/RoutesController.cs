@@ -1,4 +1,6 @@
 ﻿using AviaSales.Application.Routes.Commands.CreateRoute;
+using AviaSales.Application.Routes.Commands.DeleteRoute;
+using AviaSales.Application.Routes.Commands.UpdateRoute;
 using AviaSales.Application.Routes.Dto;
 using AviaSales.Application.Routes.Queries.GetRouteById;
 using AviaSales.Application.Routes.Queries.GetRoutes;
@@ -29,14 +31,44 @@ public class RoutesController : ControllerBase
     {
         var result = await _mediator.Send(new GetRouteByIdQuery(id));
 
-        return result is null ? NotFound() : Ok(result);
+        return result is null ? NotFound("Route not found") : Ok(result);
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateRoute(CreateUpdateRouteDto model)
     {
-        await _mediator.Send(new CreateRouteCommand(model));
+        var id = await _mediator.Send(new CreateRouteCommand(model));
 
-        return Ok();
+        return CreatedAtRoute("RouteById", new { id });
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateRoute(Guid id, CreateUpdateRouteDto model)
+    {
+        var route = await _mediator.Send(new GetRouteByIdQuery(id));
+
+        if (route is null)
+        {
+            return NotFound("Route not found");
+        }
+
+        await _mediator.Send(new UpdateRouteCommand(id, model));
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteRoute(Guid id)
+    {
+        var route = await _mediator.Send(new GetRouteByIdQuery(id));
+
+        if (route is null)
+        {
+            return NotFound("Route not found");
+        }
+
+        await _mediator.Send(new DeleteRouteCommand(id));
+
+        return NoContent();
     }
 }

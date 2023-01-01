@@ -1,18 +1,15 @@
 ﻿using System.Data;
 using AviaSales.Application.Common.Extensions;
 using AviaSales.Application.Routes.Dto;
-using Dapper;
 using FluentValidation;
 
 namespace AviaSales.Application.Routes.Commands.CreateRoute;
 
 internal class CreateUpdateRouteDtoValidator : AbstractValidator<CreateUpdateRouteDto>
 {
-    private readonly IDbConnection _dbConnection;
-
     public CreateUpdateRouteDtoValidator(IDbConnection dbConnection)
     {
-        _dbConnection = dbConnection;
+        RuleLevelCascadeMode = CascadeMode.Stop;
 
         RuleFor(x => x.Arrival)
             .GreaterThan(x => x.Departure);

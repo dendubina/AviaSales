@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Dapper;
 using MediatR;
 
 namespace AviaSales.Application.Routes.Commands.CreateRoute;
@@ -12,8 +13,19 @@ internal class CreateRouteCommandHandler : IRequestHandler<CreateRouteCommand, G
         _dbConnection = dbConnection;
     }
 
-    public Task<Guid> Handle(CreateRouteCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(CreateRouteCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        const string query = "INSERT INTO routes (id, arrival, departure, fromid, toid, planeid) " +
+                             "VALUES (gen_random_uuid (), @Arrival, @Departure, @FromId, @ToId, @PlaneId) " +
+                             "RETURNING Id";
+
+        var parameters = new DynamicParameters();
+        parameters.Add("Arrival", request.CreateRouteDto.Arrival, DbType.DateTime);
+        parameters.Add("Departure", request.CreateRouteDto.Departure, DbType.DateTime);
+        parameters.Add("FromId", request.CreateRouteDto.FromId, DbType.Guid);
+        parameters.Add("ToId", request.CreateRouteDto.ToId, DbType.Guid);
+        parameters.Add("PlaneId", request.CreateRouteDto.PlaneId, DbType.Guid);
+
+        return await _dbConnection.ExecuteScalarAsync<Guid>(query, parameters);
     }
 }
