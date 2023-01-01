@@ -2,11 +2,19 @@
 
 public class UserProfile
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
-    public string? UserName { get; set; }
+    public string UserName { get; init; }
 
-    public string? Email { get; set; }
+    public string Email { get; init; }
 
-    public string? JwtToken { get; set; }
+    public string AccessToken { get; init; }
+
+    public UserProfile(Guid id, string userName, string email, string accessToken)
+    {
+        Id = id;
+        UserName = userName;
+        Email = email;
+        AccessToken = accessToken;
+    }
 }
