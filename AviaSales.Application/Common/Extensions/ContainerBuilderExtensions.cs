@@ -14,6 +14,7 @@ internal static class ContainerBuilderExtensions
         var config = MediatRConfigurationBuilder
             .Create(Assembly.GetExecutingAssembly())
             .WithCustomPipelineBehavior(typeof(ValidationBehaviour<,>))
+            .WithCustomPipelineBehavior(typeof(AuthorizationBehavior<,>))
             .WithAllOpenGenericHandlerTypesRegistered()
             .Build();
 

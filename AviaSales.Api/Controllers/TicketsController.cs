@@ -1,5 +1,6 @@
 ﻿using AviaSales.Application.Tickets.Commands.BookTicket;
 using AviaSales.Application.Tickets.Dto;
+using AviaSales.Application.Tickets.Queries.GetUserTickets;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,5 +23,13 @@ public class TicketsController : ControllerBase
         await _mediator.Send(new BookTicketCommand(model));
 
         return Ok();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUserTickets()
+    {
+        var tickets = await _mediator.Send(new GetUserTicketsQuery());
+
+        return Ok(tickets);
     }
 }

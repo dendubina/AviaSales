@@ -4,7 +4,7 @@ namespace AviaSales.Api.Extensions;
 
 public static class ControllerBaseExtensions
 {
-    public static ActionResult ValidationProblem(this ControllerBase controller, IEnumerable<string> errors)
+    public static IActionResult ValidationProblem(this ControllerBase controller, IEnumerable<string> errors)
     {
         foreach (var error in errors)
         {

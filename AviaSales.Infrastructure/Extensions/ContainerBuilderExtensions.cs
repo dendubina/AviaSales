@@ -16,16 +16,9 @@ internal static class ContainerBuilderExtensions
             var config = c.Resolve<IConfiguration>();
             var optsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-            if (config.GetValue<bool>("UseInMemoryDatabase"))
-            {
-                optsBuilder.UseInMemoryDatabase("InMemoryDatabase");
-            }
-            else
-            {
-                optsBuilder.UseNpgsql(config.GetConnectionString("Postgres"),
+            optsBuilder.UseNpgsql(config.GetConnectionString("Postgres"),
                     opt => opt.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName))
-                    .UseLowerCaseNamingConvention();
-            }
+                .UseLowerCaseNamingConvention();
 
             return new AppDbContext(optsBuilder.Options);
         }).AsSelf().InstancePerLifetimeScope();

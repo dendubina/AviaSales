@@ -7,7 +7,7 @@ using AviaSales.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-namespace AviaSales.Infrastructure.Services.Identity;
+namespace AviaSales.Infrastructure.Services;
 
 internal class IdentityService : IIdentityService
 {
@@ -74,7 +74,10 @@ internal class IdentityService : IIdentityService
 
     private async Task<IEnumerable<Claim>> GetClaimsAsync(User user)
     {
-        var claims = new List<Claim>();
+        var claims = new List<Claim>()
+        {
+            new Claim("id", user.Id.ToString())
+        };
 
         var roles = await _userManager.GetRolesAsync(user);
         claims.AddRange(roles.Select(role => new Claim("role", role)));

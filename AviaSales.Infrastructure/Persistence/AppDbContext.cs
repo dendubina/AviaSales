@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using AviaSales.Domain.Entities;
-using AviaSales.Infrastructure.Services.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

@@ -1,18 +1,14 @@
-﻿using MediatR;
+﻿using AviaSales.Application.Common.Attributes;
+using AviaSales.Application.Tickets.Dto;
+using MediatR;
 
 namespace AviaSales.Application.Tickets.Queries.GetUserTickets;
 
-internal class GetUserTicketsQuery : IRequest<IEnumerable<GetUserTicketDto>>
+[Authorize]
+public class GetUserTicketsQuery : IRequest<IEnumerable<GetUserTicketDto>>
 {
-    public Guid UserId { get; init; }
-
-    public GetUserTicketsQuery(Guid userId)
+    public GetUserTicketsQuery()
     {
-        if (userId == Guid.Empty)
-        {
-            throw new ArgumentException($"{nameof(userId)} is empty");
-        }
-
-        UserId = userId;
+       
     }
 }
