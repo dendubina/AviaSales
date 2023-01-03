@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using AviaSales.Application.Common.Interfaces;
 using AviaSales.Application.Planes.Dto;
 using AviaSales.Application.Routes.Dto;
 using Dapper;

@@ -35,7 +35,7 @@ internal class BookTicketDtoValidator : AbstractValidator<BookTicketDto>
     {
         const string query = "SELECT planes.seatsCount FROM routes " +
                              "JOIN planes ON planes.id = routes.planeId " +
-                             $"WHERE routes.id = @{nameof(routeId)} " +
+                            $"WHERE routes.id = @{nameof(routeId)} " +
                              "LIMIT 1";
 
         var seatsCount = await _dbConnection.ExecuteScalarAsync<int>(query, new { routeId });
@@ -46,7 +46,7 @@ internal class BookTicketDtoValidator : AbstractValidator<BookTicketDto>
     private async Task<bool> SeatAvailable(int seatNumber, Guid routeId)
     {
         const string query = "SELECT t.id FROM tickets t " +
-                             $"WHERE t.routeId = @{nameof(routeId)} AND t.seatNumber = @{nameof(seatNumber)}";
+                            $"WHERE t.routeId = @{nameof(routeId)} AND t.seatNumber = @{nameof(seatNumber)}";
 
         var existedTicketId = await _dbConnection.QueryFirstOrDefaultAsync<Guid>(query, new { routeId, seatNumber });
 

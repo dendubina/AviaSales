@@ -10,7 +10,7 @@ namespace AviaSales.Api.Controllers;
 [ApiController]
 public class TicketsController : ControllerBase
 {
-    readonly IMediator _mediator;
+    private readonly IMediator _mediator;
 
     public TicketsController(IMediator mediator)
     {
@@ -28,8 +28,6 @@ public class TicketsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetUserTickets()
     {
-        var tickets = await _mediator.Send(new GetUserTicketsQuery());
-
-        return Ok(tickets);
+        return Ok(await _mediator.Send(new GetUserTicketsQuery()));
     }
 }

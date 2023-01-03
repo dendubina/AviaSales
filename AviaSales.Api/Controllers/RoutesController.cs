@@ -31,9 +31,9 @@ public class RoutesController : ControllerBase
     {
         var result = await _mediator.Send(new GetRouteByIdQuery(id));
 
-        return result is not null
-            ? Ok(result)
-            : NotFound("Route not found");
+        return result is null
+            ? NotFound("Route not found")
+            : Ok(result);
     }
 
     [HttpPost]

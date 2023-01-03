@@ -22,7 +22,7 @@
                 throw new ArgumentNullException(nameof(profile));
             }
 
-            return new Result(succeeded: true, Array.Empty<string>(), profile);
+            return new Result(succeeded: true, errors: Array.Empty<string>(), profile);
         }
 
         public static Result Failure(string errorMessage)

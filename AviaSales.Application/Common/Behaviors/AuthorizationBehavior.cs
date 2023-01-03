@@ -23,7 +23,7 @@ public class AuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
         {
             var userId = await _currentUserService.GetCurrentUserId();
 
-            if (userId is null || await _currentUserService.IsAuthorized() == false)
+            if (string.IsNullOrWhiteSpace(userId) || await _currentUserService.IsAuthorized() == false)
             {
                 throw new UnauthorizedAccessException("Not authorized access");
             }

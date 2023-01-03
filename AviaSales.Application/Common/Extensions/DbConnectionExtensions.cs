@@ -9,8 +9,8 @@ internal static class DbConnectionExtensions
         where TKey : IEquatable<TKey>
     {
         var query = $"SELECT * from {tableName} " +
-                          $"WHERE {tableName}.id = @id " +
-                           "LIMIT 1";
+                    $"WHERE {tableName}.id = @id " +
+                     "LIMIT 1";
 
         var entity = await dbConnection.QueryFirstOrDefaultAsync<object>(query, new { id = primaryKey });
 
