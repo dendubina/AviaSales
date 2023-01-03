@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AviaSales.Application\AviaSales.Application.csproj" />
-    <ProjectReference Include="..\AviaSales.Domain\AviaSales.Domain.csproj" />
   </ItemGroup>
 
 </Project>

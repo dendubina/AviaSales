@@ -19,11 +19,11 @@ internal class GetRoutesQueryHandler : IRequestHandler<GetRoutesQuery, IEnumerab
     {
         var queryBuilder = new SqlBuilder();
         var template = queryBuilder.AddTemplate("SELECT " +
-                                 "routes.id, fr.name as From, s.name as To, arrival, departure, planes.id, planes.model, planes.seatscount " +
+                                 "routes.id, fr.name as From, s.name as To, arrival, departure, planes.id, planes.model, planes.seatsCount " +
                                  "FROM routes " +
-                                 "JOIN locations fr ON routes.fromid = fr.id " +
-                                 "JOIN locations s ON routes.toid = s.id " +
-                                 "JOIN planes ON planes.id = routes.planeid " +
+                                 "JOIN locations fr ON routes.fromId = fr.id " +
+                                 "JOIN locations s ON routes.toId = s.id " +
+                                 "JOIN planes ON planes.id = routes.planeId " +
                                  "/**where**/");
 
         if (!string.IsNullOrWhiteSpace(request.Parameters.From))

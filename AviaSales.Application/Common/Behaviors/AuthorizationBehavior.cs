@@ -8,7 +8,7 @@ namespace AviaSales.Application.Common.Behaviors;
 public class AuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    readonly ICurrentUserService _currentUserService;
+    private readonly ICurrentUserService _currentUserService;
 
     public AuthorizationBehavior(ICurrentUserService currentUserService)
     {
@@ -19,14 +19,9 @@ public class AuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
     {
         var authAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>().ToArray();
 
-        if (authAttributes.Any())
+        if (authAttributes.Any() && await _currentUserService.IsAuthorized() == false)
         {
-            var userId = await _currentUserService.GetCurrentUserId();
-
-            if (string.IsNullOrWhiteSpace(userId) || await _currentUserService.IsAuthorized() == false)
-            {
-                throw new UnauthorizedAccessException("Not authorized access");
-            }
+            throw new UnauthorizedAccessException("Not authorized access");
         }
 
         return await next();

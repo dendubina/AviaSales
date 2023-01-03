@@ -4,23 +4,31 @@ using AviaSales.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
+using Serilog;
 
 namespace AviaSales.Infrastructure.Services;
 
 internal class CurrentUserService : ICurrentUserService
 {
-    private readonly IHttpContextAccessor _accessor;
     private readonly string? _accessToken;
     private readonly JwtSecurityTokenHandler _jwtHandler = new();
-
-    public CurrentUserService(IHttpContextAccessor accessor)
+    
+    public CurrentUserService(IHttpContextAccessor accessor, ILogger logger)
     {
-        _accessor = accessor;
         var authHeader = accessor.HttpContext.Request.Headers[HeaderNames.Authorization].ToString();
 
         if (!string.IsNullOrWhiteSpace(authHeader))
         {
-            _accessToken = authHeader["Bearer ".Length..].Trim();
+            var accessToken = authHeader.Replace("Bearer", string.Empty).Trim();
+
+            if (_jwtHandler.CanReadToken(accessToken))
+            {
+                _accessToken = accessToken;
+            }
+            else
+            {
+                logger.Warning("Attempt to authorize using invalid token: {authHeader}", authHeader);
+            }
         }
     }
 

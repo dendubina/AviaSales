@@ -7,7 +7,9 @@ public class ApplicationModule : Module
 {
     protected override void Load(ContainerBuilder builder)
     {
-        builder.ConfigureMediatR();
-        builder.ConfigureFluentValidation();
+        builder
+            .ConfigureMediatR()
+            .ConfigureFluentValidation()
+            .ConfigureSerilog();
     }
 }

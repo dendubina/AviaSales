@@ -7,8 +7,5 @@ namespace AviaSales.Application.Tickets.Queries.GetUserTickets;
 [Authorize]
 public class GetUserTicketsQuery : IRequest<IEnumerable<GetUserTicketDto>>
 {
-    public GetUserTicketsQuery()
-    {
-       
-    }
+    
 }
