@@ -5,9 +5,9 @@ namespace AviaSales.Application.Routes.Commands.UpdateRoute;
 
 public class UpdateRouteCommand : IRequest
 {
-    public Guid Id { get; init; }
+    public Guid Id { get; }
 
-    public CreateUpdateRouteDto UpdateRouteDto { get; init; }
+    public CreateUpdateRouteDto UpdateRouteDto { get; }
 
     public UpdateRouteCommand(Guid id, CreateUpdateRouteDto dto)
     {

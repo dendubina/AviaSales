@@ -5,7 +5,7 @@ namespace AviaSales.Application.Tickets.Commands.BookTicket;
 
 public class BookTicketCommand : IRequest<Guid>
 {
-    public CreateTicketDtoBase CreateTicketDto { get; init; }
+    public CreateTicketDtoBase CreateTicketDto { get; }
 
     public BookTicketCommand(CreateTicketDtoBase dto)
     {

@@ -2,5 +2,5 @@
 
 public class BuyTicketDto : CreateTicketDtoBase
 {
-    public string? Nonce { get; set; }
+    public string? Nonce { get; set; } = "fake-valid-nonce";
 }

@@ -5,7 +5,7 @@ namespace AviaSales.Application.Users.Commands.SignUp;
 
 public class SignUpCommand : IRequest<Result>
 {
-    public SignUpModel SignUpModel { get; init; }
+    public SignUpModel SignUpModel { get; }
 
     public SignUpCommand(SignUpModel model)
     {

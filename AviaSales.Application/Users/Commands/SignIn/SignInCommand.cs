@@ -5,7 +5,7 @@ namespace AviaSales.Application.Users.Commands.SignIn;
 
 public class SignInCommand : IRequest<Result>
 {
-    public SignInModel SignInModel { get; init; }
+    public SignInModel SignInModel { get; }
 
     public SignInCommand(SignInModel model)
     {

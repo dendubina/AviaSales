@@ -5,7 +5,7 @@ namespace AviaSales.Application.Routes.Commands.CreateRoute;
 
 public class CreateRouteCommand : IRequest<Guid>
 {
-    public CreateUpdateRouteDto CreateRouteDto { get; init; }
+    public CreateUpdateRouteDto CreateRouteDto { get; }
 
     public CreateRouteCommand(CreateUpdateRouteDto dto)
     {
