@@ -8,6 +8,8 @@ public class Route
 
     public DateTime Departure { get; set; }
 
+    public decimal Price { get; set; }  
+
     public Guid FromId { get; set; }
 
     public Guid ToId { get; set; }

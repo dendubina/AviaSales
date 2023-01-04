@@ -10,7 +10,6 @@ public class ApplicationModule : Module
         builder
             .ConfigureMediatR()
             .ConfigureFluentValidation()
-            .ConfigureSerilog()
-            .ConfigureBrainTreeGateway();
+            .ConfigureSerilog();
     }
 }

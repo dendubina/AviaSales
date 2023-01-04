@@ -1,17 +1,17 @@
-﻿using Braintree;
+﻿using AviaSales.Application.Common.Interfaces;
 using MediatR;
 
 namespace AviaSales.Application.Payments.Queries;
 
-public class GetTokenQueryHandler : RequestHandler<GetTokenQuery, string>
+public class GetTokenQueryHandler : IRequestHandler<GetTokenQuery, string>
 {
-    private readonly BraintreeGateway _gateway;
+    private readonly IPaymentSystem _paymentSystem;
 
-    public GetTokenQueryHandler(BraintreeGateway gateway)
+    public GetTokenQueryHandler(IPaymentSystem paymentSystem)
     {
-        _gateway = gateway;
+        _paymentSystem = paymentSystem;
     }
 
-    protected override string Handle(GetTokenQuery request)
-        => _gateway.ClientToken.Generate();
+    public async Task<string> Handle(GetTokenQuery request, CancellationToken cancellationToken)
+        => await _paymentSystem.GenerateToken();
 }

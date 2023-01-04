@@ -28,6 +28,7 @@ internal static class DataInitializer
 
         Routes = new Faker<Route>()
             .RuleFor(x => x.Id, f => f.Random.Guid())
+            .RuleFor(x => x.Price, f => f.Finance.Amount(1, 100))
             .RuleFor(x => x.Departure, f => f.Date.Soon(30).ToUniversalTime())
             .RuleFor(x => x.Arrival, (f, u) => (u.Departure + f.Date.SoonTimeOnly().ToTimeSpan()).ToUniversalTime())
             .RuleFor(x => x.FromId, f => f.Random.ArrayElement(Locations.ToArray()).Id)
