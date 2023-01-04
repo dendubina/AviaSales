@@ -4,13 +4,14 @@ using AviaSales.Application.Tickets.Dto;
 using Dapper;
 using FluentValidation;
 
-namespace AviaSales.Application.Tickets.Commands.BookTicket;
+namespace AviaSales.Application.Tickets.Validators;
 
-internal class BookTicketDtoValidator : AbstractValidator<BookTicketDto>
+public class CreateTicketDtoValidator<T> : AbstractValidator<T>
+    where T : CreateTicketDtoBase
 {
     private readonly IDbConnection _dbConnection;
 
-    public BookTicketDtoValidator(IDbConnection dbConnection)
+    public CreateTicketDtoValidator(IDbConnection dbConnection)
     {
         _dbConnection = dbConnection;
         RuleLevelCascadeMode = CascadeMode.Stop;

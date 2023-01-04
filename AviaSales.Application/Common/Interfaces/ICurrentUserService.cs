@@ -1,9 +1,8 @@
-﻿namespace AviaSales.Application.Common.Interfaces
-{
-    public interface ICurrentUserService
-    {
-        Task<string?> GetCurrentUserId();
+﻿namespace AviaSales.Application.Common.Interfaces;
 
-        Task<bool> IsAuthorized();
-    }
+public interface ICurrentUserService
+{
+    Task<string?> GetCurrentUserId();
+
+    Task<bool> IsAuthorized();
 }

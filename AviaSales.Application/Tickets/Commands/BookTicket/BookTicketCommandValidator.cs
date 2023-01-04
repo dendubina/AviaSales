@@ -1,4 +1,6 @@
 ﻿using System.Data;
+using AviaSales.Application.Tickets.Dto;
+using AviaSales.Application.Tickets.Validators;
 using FluentValidation;
 
 namespace AviaSales.Application.Tickets.Commands.BookTicket
@@ -9,7 +11,7 @@ namespace AviaSales.Application.Tickets.Commands.BookTicket
         {
             RuleFor(x => x.CreateTicketDto)
                 .NotNull()
-                .SetValidator(new BookTicketDtoValidator(dbConnection));
+                .SetValidator(new CreateTicketDtoValidator<CreateTicketDtoBase>(dbConnection));
         }
     }
 }

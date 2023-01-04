@@ -2,7 +2,7 @@
 
 namespace AviaSales.Application.Tickets.Dto;
 
-public class GetUserTicketDto
+public class GetTicketDto
 {
     public Guid Id { get; set; }
 

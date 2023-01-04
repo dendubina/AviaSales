@@ -6,7 +6,7 @@ using MediatR;
 
 namespace AviaSales.Application.Tickets.Queries.GetUserTickets;
 
-internal class GetUserTicketsQueryHandler : IRequestHandler<GetUserTicketsQuery, IEnumerable<GetUserTicketDto>>
+internal class GetUserTicketsQueryHandler : IRequestHandler<GetUserTicketsQuery, IEnumerable<GetTicketDto>>
 {
     private readonly IDbConnection _dbConnection;
     private readonly ICurrentUserService _currentUserService;
@@ -17,7 +17,7 @@ internal class GetUserTicketsQueryHandler : IRequestHandler<GetUserTicketsQuery,
         _currentUserService = currentUserService;
     }
 
-    public async Task<IEnumerable<GetUserTicketDto>> Handle(GetUserTicketsQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<GetTicketDto>> Handle(GetUserTicketsQuery request, CancellationToken cancellationToken)
     {
         const string query = "SELECT " +
                              "t.id, t.seatNumber, t.ticketStatus, r.arrival, r.departure, fromLoc.name AS from, toLoc.name AS to " +
@@ -29,6 +29,6 @@ internal class GetUserTicketsQueryHandler : IRequestHandler<GetUserTicketsQuery,
 
         var userId = new Guid(await _currentUserService.GetCurrentUserId());
 
-        return await _dbConnection.QueryAsync<GetUserTicketDto>(query, new { userId });
+        return await _dbConnection.QueryAsync<GetTicketDto>(query, new { userId });
     }
 }

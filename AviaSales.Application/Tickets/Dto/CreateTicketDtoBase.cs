@@ -1,6 +1,6 @@
 ﻿namespace AviaSales.Application.Tickets.Dto;
 
-public class BookTicketDto
+public class CreateTicketDtoBase
 {
     public Guid RouteId { get; set; } = new("01b2e03e-ced7-fd96-d389-7d7d68eb44db");
 

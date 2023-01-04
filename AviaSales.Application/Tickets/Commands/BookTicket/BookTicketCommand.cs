@@ -1,15 +1,14 @@
 ﻿using AviaSales.Application.Tickets.Dto;
 using MediatR;
 
-namespace AviaSales.Application.Tickets.Commands.BookTicket
-{
-    public class BookTicketCommand : IRequest<Guid>
-    {
-        public BookTicketDto CreateTicketDto { get; init; }
+namespace AviaSales.Application.Tickets.Commands.BookTicket;
 
-        public BookTicketCommand(BookTicketDto dto)
-        {
-            CreateTicketDto = dto ?? throw new ArgumentNullException(nameof(dto));
-        }
+public class BookTicketCommand : IRequest<Guid>
+{
+    public CreateTicketDtoBase CreateTicketDto { get; init; }
+
+    public BookTicketCommand(CreateTicketDtoBase dto)
+    {
+        CreateTicketDto = dto ?? throw new ArgumentNullException(nameof(dto));
     }
 }

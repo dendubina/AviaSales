@@ -6,6 +6,7 @@ using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Braintree;
 
 namespace AviaSales.Application.Common.Extensions;
 
@@ -52,6 +53,19 @@ internal static class ContainerBuilderExtensions
                 .CreateLogger();
         }).SingleInstance();
            
+
+        return builder;
+    }
+
+    public static ContainerBuilder ConfigureBrainTreeGateway(this ContainerBuilder builder)
+    {
+        builder.Register(context => new BraintreeGateway
+        {
+            Environment = Braintree.Environment.SANDBOX,
+            MerchantId = "9xnq7thvsfzb79w6",
+            PublicKey = "sgv255xfwzmf4qcy",
+            PrivateKey = "57bf2f9a97a41329f723055d4633f0b7"
+        }).AsSelf().SingleInstance();
 
         return builder;
     }

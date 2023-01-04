@@ -18,7 +18,7 @@ public class TicketsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> BookTicket(BookTicketDto model)
+    public async Task<IActionResult> BookTicket(CreateTicketDtoBase model)
     {
         await _mediator.Send(new BookTicketCommand(model));
 

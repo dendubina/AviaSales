@@ -5,7 +5,7 @@ using MediatR;
 namespace AviaSales.Application.Tickets.Queries.GetUserTickets;
 
 [Authorize]
-public class GetUserTicketsQuery : IRequest<IEnumerable<GetUserTicketDto>>
+public class GetUserTicketsQuery : IRequest<IEnumerable<GetTicketDto>>
 {
     
 }
