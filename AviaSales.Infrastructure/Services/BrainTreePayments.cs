@@ -18,15 +18,10 @@ public class BrainTreePayments : IPaymentSystem
 
     public async Task<PaymentResult> ExecuteAsync(string nonce, decimal amount)
     {
-        var request = new TransactionRequest()
+        var request = new TransactionRequest
         {
             Amount = amount,
-            PaymentMethodNonce = nonce,
-
-            Options =
-            {
-                SubmitForSettlement = true,
-            }
+            PaymentMethodNonce = nonce
         };
 
         var result = await _brainTreeGateway.Transaction.SaleAsync(request);

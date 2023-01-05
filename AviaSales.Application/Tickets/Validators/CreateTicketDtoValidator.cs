@@ -21,9 +21,6 @@ public class CreateTicketDtoValidator<T> : AbstractValidator<T>
             .MustAsync((routeId, _) => dbConnection.IsEntityExistsAsync("routes", routeId))
             .WithMessage(model => $"Route with id '{model.RouteId}' not found");
 
-        RuleFor(x => x.UserId)
-            .NotEmpty();
-
         RuleFor(x => x.SeatNumber)
             .GreaterThan(0)
             .MustAsync((model, _, _) => SeatExists(model.SeatNumber, model.RouteId))

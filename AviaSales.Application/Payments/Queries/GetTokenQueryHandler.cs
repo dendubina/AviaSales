@@ -12,6 +12,6 @@ public class GetTokenQueryHandler : IRequestHandler<GetTokenQuery, string>
         _paymentSystem = paymentSystem;
     }
 
-    public async Task<string> Handle(GetTokenQuery request, CancellationToken cancellationToken)
-        => await _paymentSystem.GenerateToken();
+    public Task<string> Handle(GetTokenQuery request, CancellationToken cancellationToken)
+        => _paymentSystem.GenerateTokenAsync();
 }

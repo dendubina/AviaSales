@@ -9,12 +9,12 @@ namespace AviaSales.Application.Tickets.Queries.GetUserTickets;
 internal class GetUserTicketsQueryHandler : IRequestHandler<GetUserTicketsQuery, IEnumerable<GetTicketDto>>
 {
     private readonly IDbConnection _dbConnection;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly ICurrentUserService _currentUser;
 
     public GetUserTicketsQueryHandler(IDbConnection dbConnection, ICurrentUserService currentUserService)
     {
         _dbConnection = dbConnection;
-        _currentUserService = currentUserService;
+        _currentUser = currentUserService;
     }
 
     public async Task<IEnumerable<GetTicketDto>> Handle(GetUserTicketsQuery request, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ internal class GetUserTicketsQueryHandler : IRequestHandler<GetUserTicketsQuery,
                              "JOIN locations toLoc ON r.toId = toLoc.id " +
                              "WHERE ownerId = @userId";
 
-        var userId = new Guid(await _currentUserService.GetCurrentUserId());
+        var userId = new Guid(_currentUser.Id);
 
         return await _dbConnection.QueryAsync<GetTicketDto>(query, new { userId });
     }

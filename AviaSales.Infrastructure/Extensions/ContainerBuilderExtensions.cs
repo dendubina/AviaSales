@@ -4,6 +4,7 @@ using AviaSales.Application.Common.Interfaces;
 using AviaSales.Domain.Repositories;
 using AviaSales.Infrastructure.Persistence;
 using AviaSales.Infrastructure.Services;
+using AviaSales.Infrastructure.Services.Options;
 using AviaSales.Infrastructure.Services.Repositories;
 using Braintree;
 using MailKit.Net.Smtp;
@@ -71,7 +72,18 @@ internal static class ContainerBuilderExtensions
 
     public static ContainerBuilder ConfigureEmailService(this ContainerBuilder builder)
     {
-        builder.RegisterType<SmtpClient>().As<ISmtpClient>().SingleInstance();
+        builder.Register(context =>
+        {
+            var config = context.Resolve<IConfiguration>();
+
+            return Options.Create(config.GetSection(nameof(EmailOptions)).Get<EmailOptions>());
+        }).AsSelf().SingleInstance();
+
+        builder.RegisterType<SmtpClient>().As<ISmtpClient>()
+            .SingleInstance();
+
+        builder.RegisterType<EmailService>().As<IEmailService>()
+            .InstancePerLifetimeScope();
 
         return builder;
     }

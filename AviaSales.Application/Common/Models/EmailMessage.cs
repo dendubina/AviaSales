@@ -6,12 +6,12 @@ public class EmailMessage
 
     public string Subject { get; set; }
 
-    public string Message { get; set; }
+    public string Text { get; set; }
 
-    public EmailMessage(string to, string subject, string message)
+    public EmailMessage(string to, string subject, string text)
     {
         To = to ?? throw new ArgumentNullException(nameof(to));
         Subject = subject ?? throw new ArgumentNullException(nameof(subject));
-        Message = message ?? throw new ArgumentNullException(nameof(message));
+        Text = text ?? throw new ArgumentNullException(nameof(text));
     }
 }
