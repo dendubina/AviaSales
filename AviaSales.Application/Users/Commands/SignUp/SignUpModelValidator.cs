@@ -1,4 +1,4 @@
-﻿using AviaSales.Application.Common.Models.Users;
+﻿using AviaSales.Application.Users.Dto;
 using FluentValidation;
 
 namespace AviaSales.Application.Users.Commands.SignUp;

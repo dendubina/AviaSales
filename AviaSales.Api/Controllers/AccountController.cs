@@ -1,7 +1,7 @@
 ﻿using AviaSales.Api.Extensions;
-using AviaSales.Application.Common.Models.Users;
 using AviaSales.Application.Users.Commands.SignIn;
 using AviaSales.Application.Users.Commands.SignUp;
+using AviaSales.Application.Users.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

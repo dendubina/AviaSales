@@ -1,4 +1,4 @@
-﻿namespace AviaSales.Application.Common.Models.Users;
+﻿namespace AviaSales.Application.Users.Dto;
 
 public class SignUpModel
 {

@@ -2,7 +2,8 @@
 using System.Security.Claims;
 using System.Text;
 using AviaSales.Application.Common.Interfaces;
-using AviaSales.Application.Common.Models.Users;
+using AviaSales.Application.Common.Models;
+using AviaSales.Application.Users.Dto;
 using AviaSales.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -20,23 +21,23 @@ internal class IdentityService : IIdentityService
         _signInManager = signInManager;
     }
 
-    public async Task<Result> SignInAsync(SignInModel userData)
+    public async Task<AuthResult> SignInAsync(SignInModel userData)
     {
         var user = await _userManager.FindByEmailAsync(userData.Email);
 
         if (user is null)
         {
-            return Result.Failure("User not found");
+            return AuthResult.Failure("User not found");
         }
 
         var result = await _signInManager.PasswordSignInAsync(user, userData.Password, isPersistent: false, lockoutOnFailure: false);
 
         return result.Succeeded
-            ? Result.Success(await CreateProfile(user))
-            : Result.Failure("Password is invalid");
+            ? AuthResult.Success(await CreateProfile(user))
+            : AuthResult.Failure("Password is invalid");
     }
 
-    public async Task<Result> SignUpAsync(SignUpModel userData)
+    public async Task<AuthResult> SignUpAsync(SignUpModel userData)
     {
         var userToCreate = new User
         {
@@ -47,8 +48,8 @@ internal class IdentityService : IIdentityService
         var result = await _userManager.CreateAsync(userToCreate, userData.Password);
 
         return result.Succeeded
-            ? Result.Success(await CreateProfile(userToCreate))
-            : Result.Failure(result.Errors.Select(x => x.Description));
+            ? AuthResult.Success(await CreateProfile(userToCreate))
+            : AuthResult.Failure(result.Errors.Select(x => x.Description));
     }
 
     private async Task<UserProfile> CreateProfile(User user)
@@ -76,7 +77,8 @@ internal class IdentityService : IIdentityService
     {
         var claims = new List<Claim>()
         {
-            new Claim("id", user.Id.ToString())
+            new Claim( "id", user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email)
         };
 
         var roles = await _userManager.GetRolesAsync(user);

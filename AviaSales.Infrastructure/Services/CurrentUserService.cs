@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using AviaSales.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -12,14 +13,24 @@ internal class CurrentUserService : ICurrentUserService
 {
     private readonly string? _accessToken;
     private readonly JwtSecurityTokenHandler _jwtHandler = new();
-    
+
+    public string? Id =>
+        string.IsNullOrWhiteSpace(_accessToken)
+            ? null
+            : _jwtHandler.ReadJwtToken(_accessToken).Claims.FirstOrDefault(x => x.Type == "id")?.Value;
+
+    public string? Email =>
+        string.IsNullOrWhiteSpace(_accessToken)
+            ? null
+            : _jwtHandler.ReadJwtToken(_accessToken).Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+
     public CurrentUserService(IHttpContextAccessor accessor, ILogger logger)
     {
         var authHeader = accessor.HttpContext.Request.Headers[HeaderNames.Authorization].ToString();
 
         if (!string.IsNullOrWhiteSpace(authHeader))
         {
-            var accessToken = authHeader.Replace("Bearer", string.Empty).Trim();
+            var accessToken = authHeader.Replace(oldValue: "Bearer", newValue: string.Empty).Trim();
 
             if (_jwtHandler.CanReadToken(accessToken))
             {
@@ -30,13 +41,6 @@ internal class CurrentUserService : ICurrentUserService
                 logger.Warning("Attempt to authorize using invalid token: {authHeader}", authHeader);
             }
         }
-    }
-
-    public Task<string?> GetCurrentUserId()
-    {
-        return string.IsNullOrWhiteSpace(_accessToken)
-            ? Task.FromResult<string?>(null)
-            : Task.FromResult(_jwtHandler.ReadJwtToken(_accessToken).Claims.FirstOrDefault(x => x.Type == "id")?.Value);
     }
 
     public async Task<bool> IsAuthorized()

@@ -2,7 +2,9 @@
 
 public interface ICurrentUserService
 {
-    Task<string?> GetCurrentUserId();
+    string? Id { get; }
+
+    string? Email { get; }
 
     Task<bool> IsAuthorized();
 }

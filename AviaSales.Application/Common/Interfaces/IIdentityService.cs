@@ -1,10 +1,11 @@
-﻿using AviaSales.Application.Common.Models.Users;
+﻿using AviaSales.Application.Common.Models;
+using AviaSales.Application.Users.Dto;
 
 namespace AviaSales.Application.Common.Interfaces;
 
 public interface IIdentityService
 {
-    Task<Result> SignInAsync(SignInModel model);
+    Task<AuthResult> SignInAsync(SignInModel model);
 
-    Task<Result> SignUpAsync(SignUpModel model);
+    Task<AuthResult> SignUpAsync(SignUpModel model);
 }

@@ -1,4 +1,4 @@
-﻿namespace AviaSales.Application.Common.Models.Users;
+﻿namespace AviaSales.Application.Common.Models;
 
 public class UserProfile
 {
@@ -11,7 +11,7 @@ public class UserProfile
     public string AccessToken { get; init; }
 
     public UserProfile(Guid id, string userName, string email, string accessToken)
-    {        
+    {
         if (id == Guid.Empty)
         {
             throw new ArgumentException("Id must not be empty", nameof(id));

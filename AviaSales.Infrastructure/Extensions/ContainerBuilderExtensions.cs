@@ -6,8 +6,10 @@ using AviaSales.Infrastructure.Persistence;
 using AviaSales.Infrastructure.Services;
 using AviaSales.Infrastructure.Services.Repositories;
 using Braintree;
+using MailKit.Net.Smtp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Npgsql;
 
 namespace AviaSales.Infrastructure.Extensions;
@@ -63,6 +65,13 @@ internal static class ContainerBuilderExtensions
 
         builder.RegisterType<BrainTreePayments>().As<IPaymentSystem>()
             .SingleInstance();
+
+        return builder;
+    }
+
+    public static ContainerBuilder ConfigureEmailService(this ContainerBuilder builder)
+    {
+        builder.RegisterType<SmtpClient>().As<ISmtpClient>().SingleInstance();
 
         return builder;
     }

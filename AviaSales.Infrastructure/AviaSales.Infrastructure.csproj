@@ -12,6 +12,7 @@
     <PackageReference Include="bogus" Version="34.0.2" />
     <PackageReference Include="braintree" Version="5.14.0" />
     <PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
+    <PackageReference Include="mailkit" Version="3.4.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.12">

@@ -1,9 +1,10 @@
-﻿using AviaSales.Application.Common.Models.Users;
+﻿using AviaSales.Application.Common.Models;
+using AviaSales.Application.Users.Dto;
 using MediatR;
 
 namespace AviaSales.Application.Users.Commands.SignIn;
 
-public class SignInCommand : IRequest<Result>
+public class SignInCommand : IRequest<AuthResult>
 {
     public SignInModel SignInModel { get; }
 

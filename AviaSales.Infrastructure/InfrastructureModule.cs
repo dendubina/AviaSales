@@ -14,7 +14,8 @@ public class InfrastructureModule : Module
             .ConfigureAppDbContext()
             .ConfigureSqlConnection()
             .ConfigureBrainTreeGateway()
-            .ConfigureRepositories();
+            .ConfigureRepositories()
+            .ConfigureEmailService();
 
         builder.RegisterType<IdentityService>().As<IIdentityService>()
             .InstancePerLifetimeScope();

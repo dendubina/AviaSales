@@ -1,6 +1,6 @@
-﻿namespace AviaSales.Application.Common.Models.Users;
+﻿namespace AviaSales.Application.Users.Dto;
 
-public  class SignInModel
+public class SignInModel
 {
     public string? Email { get; set; }
 

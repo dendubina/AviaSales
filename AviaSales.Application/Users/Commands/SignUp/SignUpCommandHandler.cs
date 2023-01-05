@@ -1,10 +1,10 @@
 ﻿using AviaSales.Application.Common.Interfaces;
-using AviaSales.Application.Common.Models.Users;
+using AviaSales.Application.Common.Models;
 using MediatR;
 
 namespace AviaSales.Application.Users.Commands.SignUp;
 
-internal class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
+internal class SignUpCommandHandler : IRequestHandler<SignUpCommand, AuthResult>
 {
     readonly IIdentityService _identityService;
 
@@ -13,6 +13,6 @@ internal class SignUpCommandHandler : IRequestHandler<SignUpCommand, Result>
         _identityService = identityService;
     }
 
-    public async Task<Result> Handle(SignUpCommand request, CancellationToken cancellationToken)
+    public async Task<AuthResult> Handle(SignUpCommand request, CancellationToken cancellationToken)
         => await _identityService.SignUpAsync(request.SignUpModel);
 }
