@@ -16,11 +16,12 @@ internal class UpdateRouteCommandHandler : IRequestHandler<UpdateRouteCommand>
     public async Task<Unit> Handle(UpdateRouteCommand request, CancellationToken cancellationToken)
     {
         const string query = "UPDATE routes " +
-                             "SET arrival = @Arrival, departure = @Departure, fromid = @FromId, toid = @ToId, planeid = @PlaneId " +
+                             "SET arrival = @Arrival, departure = @Departure, fromid = @FromId, toid = @ToId, planeid = @PlaneId, price = @Price " +
                              "WHERE id = @Id";
 
         var parameters = new DynamicParameters();
         parameters.Add("Id", request.Id, DbType.Guid);
+        parameters.Add("Price", request.UpdateRouteDto.Price, DbType.Decimal);
         parameters.Add("Arrival", request.UpdateRouteDto.Arrival, DbType.DateTime);
         parameters.Add("Departure", request.UpdateRouteDto.Departure, DbType.DateTime);
         parameters.Add("FromId", request.UpdateRouteDto.FromId, DbType.Guid);

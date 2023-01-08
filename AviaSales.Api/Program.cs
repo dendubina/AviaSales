@@ -1,3 +1,4 @@
+using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AviaSales.Api.Extensions;
@@ -5,19 +6,21 @@ using AviaSales.Application;
 using AviaSales.Domain.Entities;
 using AviaSales.Infrastructure;
 using AviaSales.Infrastructure.Persistence;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
-    .ConfigureContainer<ContainerBuilder>(containerBuilder =>
-    {
-        containerBuilder.RegisterModule(new InfrastructureModule());
-        containerBuilder.RegisterModule(new ApplicationModule());
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
-        containerBuilder.ConfigureMediatR();
-    });
+builder.Host.ConfigureContainer<ContainerBuilder>(container =>
+{
+    container.RegisterModule(new InfrastructureModule());
+    container.RegisterModule(new ApplicationModule());
+    
+    container.ConfigureMediatR();
+});
 
 builder.Services.AddIdentity<User, IdentityRole<Guid>>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -81,3 +84,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { };

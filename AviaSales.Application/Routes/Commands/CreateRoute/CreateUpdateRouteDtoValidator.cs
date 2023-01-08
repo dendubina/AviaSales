@@ -11,6 +11,9 @@ internal class CreateUpdateRouteDtoValidator : AbstractValidator<CreateUpdateRou
     {
         RuleLevelCascadeMode = CascadeMode.Stop;
 
+        RuleFor(x => x.Price)
+            .GreaterThan(0);
+
         RuleFor(x => x.Arrival)
             .GreaterThan(x => x.Departure);
 

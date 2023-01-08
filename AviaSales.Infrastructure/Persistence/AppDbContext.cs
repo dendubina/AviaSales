@@ -11,6 +11,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<Location> Locations => Set<Location>();
     public DbSet<Ticket> Tickets => Set<Ticket>();
     public DbSet<Route> Routes => Set<Route>();
+    public DbSet<Plane> Planes => Set<Plane>();
 
     public AppDbContext(DbContextOptions options) : base(options)
     {

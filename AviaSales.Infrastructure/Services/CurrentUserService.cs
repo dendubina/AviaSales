@@ -26,7 +26,7 @@ internal class CurrentUserService : ICurrentUserService
 
     public CurrentUserService(IHttpContextAccessor accessor, ILogger logger)
     {
-        var authHeader = accessor.HttpContext.Request.Headers[HeaderNames.Authorization].ToString();
+        var authHeader = accessor.HttpContext?.Request?.Headers[HeaderNames.Authorization].ToString();
 
         if (!string.IsNullOrWhiteSpace(authHeader))
         {
@@ -38,7 +38,7 @@ internal class CurrentUserService : ICurrentUserService
             }
             else
             {
-                logger.Warning("Attempt to authorize using invalid token: {authHeader}", authHeader);
+                 logger.Warning("Attempt to authorize using invalid token: {authHeader}", authHeader);
             }
         }
     }

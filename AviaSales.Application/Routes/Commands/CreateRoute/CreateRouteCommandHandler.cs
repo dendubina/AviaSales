@@ -15,11 +15,12 @@ internal class CreateRouteCommandHandler : IRequestHandler<CreateRouteCommand, G
 
     public async Task<Guid> Handle(CreateRouteCommand request, CancellationToken cancellationToken)
     {
-        const string query = "INSERT INTO routes (id, arrival, departure, fromid, toid, planeid) " +
-                             "VALUES (gen_random_uuid (), @Arrival, @Departure, @FromId, @ToId, @PlaneId) " +
+        const string query = "INSERT INTO routes (id, arrival, departure, fromid, toid, planeid, price) " +
+                             "VALUES (gen_random_uuid (), @Arrival, @Departure, @FromId, @ToId, @PlaneId, @Price) " +
                              "RETURNING Id";
 
         var parameters = new DynamicParameters();
+        parameters.Add("Price", request.CreateRouteDto.Price, DbType.Decimal);
         parameters.Add("Arrival", request.CreateRouteDto.Arrival, DbType.DateTime);
         parameters.Add("Departure", request.CreateRouteDto.Departure, DbType.DateTime);
         parameters.Add("FromId", request.CreateRouteDto.FromId, DbType.Guid);

@@ -1,9 +1,10 @@
-﻿using AviaSales.Domain.Entities;
+﻿using System.Data;
+using AviaSales.Domain.Entities;
 using Bogus;
 
 namespace AviaSales.Infrastructure.Persistence.Configuration;
 
-internal static class DataInitializer
+public static class DataInitializer
 {
     public static readonly IEnumerable<Location> Locations;
 
@@ -13,7 +14,7 @@ internal static class DataInitializer
 
     static DataInitializer()
     {
-        Randomizer.Seed = new Random(8675309);
+        Randomizer.Seed = new Random(35566);
 
         Locations = new Faker<Location>()
             .RuleFor(x => x.Id, f => f.Random.Guid())

@@ -2,6 +2,8 @@
 
 public class CreateUpdateRouteDto
 {
+    public decimal Price { get; set; }
+
     public DateTime Departure { get; set; }
 
     public DateTime Arrival { get; set; }
