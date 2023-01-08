@@ -16,6 +16,11 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     public Mock<ICurrentUserService> CurrentUserMock { get; } = new();
 
+    public Mock<IPaymentSystem> PaymentSystemMock { get; } = new();
+
+    public Mock<IEmailService> EmailServiceMock { get; } = new();
+
+
     protected override IHost CreateHost(IHostBuilder builder)
     {
         
@@ -44,6 +49,12 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         builder.ConfigureTestContainer<ContainerBuilder>(builder =>
         {
             builder.Register(context => CurrentUserMock.Object).As<ICurrentUserService>()
+                .InstancePerLifetimeScope();
+
+            builder.Register(context => PaymentSystemMock.Object).As<IPaymentSystem>()
+                .InstancePerLifetimeScope();
+
+            builder.Register(context => EmailServiceMock.Object).As<IEmailService>()
                 .InstancePerLifetimeScope();
         });
     }

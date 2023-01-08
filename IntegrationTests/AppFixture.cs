@@ -27,6 +27,7 @@ public class AppFixture : IDisposable
     public void Dispose()
     {
         AppDbContext.Database.EnsureDeleted();
+        AppDbContext.Dispose();
         Factory.Dispose();
     }
 }
