@@ -6,7 +6,7 @@ using MediatR;
 
 namespace AviaSales.Application.Routes.Queries.GetRouteById;
 
-internal class GetRouteByIdQueryHandler : IRequestHandler<GetRouteByIdQuery, GetRouteDto>
+internal class GetRouteByIdQueryHandler : IRequestHandler<GetRouteByIdQuery, GetRouteDto?>
 {
     readonly IDbConnection _dbConnection;
 
@@ -15,7 +15,7 @@ internal class GetRouteByIdQueryHandler : IRequestHandler<GetRouteByIdQuery, Get
         _dbConnection = dbConnection;
     }
 
-    public async Task<GetRouteDto> Handle(GetRouteByIdQuery request, CancellationToken cancellationToken)
+    public async Task<GetRouteDto?> Handle(GetRouteByIdQuery request, CancellationToken cancellationToken)
     {
         const string query =
             "SELECT routes.id, fr.name as From, s.name as To, arrival, departure, planes.id, planes.model, planes.seatscount " +

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="fluentassertions" Version="6.8.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="moq" Version="4.18.4" />
     <PackageReference Include="xunit" Version="2.4.2" />
@@ -25,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AviaSales.Infrastructure\AviaSales.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\AviaSales.Application\AviaSales.Application.csproj" />
   </ItemGroup>
 
 </Project>
