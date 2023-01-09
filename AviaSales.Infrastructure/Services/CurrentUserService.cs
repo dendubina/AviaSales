@@ -9,10 +9,11 @@ using Serilog;
 
 namespace AviaSales.Infrastructure.Services;
 
-internal class CurrentUserService : ICurrentUserService
+public class CurrentUserService : ICurrentUserService
 {
     private readonly string? _accessToken;
     private readonly JwtSecurityTokenHandler _jwtHandler = new();
+
 
     public string? Id =>
         string.IsNullOrWhiteSpace(_accessToken)
@@ -31,7 +32,7 @@ internal class CurrentUserService : ICurrentUserService
         if (!string.IsNullOrWhiteSpace(authHeader))
         {
             var accessToken = authHeader.Replace(oldValue: "Bearer", newValue: string.Empty).Trim();
-
+            
             if (_jwtHandler.CanReadToken(accessToken))
             {
                 _accessToken = accessToken;
