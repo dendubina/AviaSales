@@ -20,7 +20,8 @@ public class GetTokenTests
     {
         //Arrange
         const string expectedToken = "token example";
-        _appFixture.Factory.PaymentSystemMock.Setup(x => x.GenerateTokenAsync()).ReturnsAsync(expectedToken);
+        _appFixture.Factory.PaymentSystemMock
+            .Setup(x => x.GenerateTokenAsync()).ReturnsAsync(expectedToken);
 
         //Act
         var actual = await _appFixture.SendAsync(new GetTokenQuery());
