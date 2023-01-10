@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AviaSales.Infrastructure.Services;
 
-internal class IdentityService : IIdentityService
+public class IdentityService : IIdentityService
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
