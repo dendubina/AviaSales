@@ -62,7 +62,7 @@ internal static class ContainerBuilderExtensions
             MerchantId = "9xnq7thvsfzb79w6",
             PublicKey = "sgv255xfwzmf4qcy",
             PrivateKey = "57bf2f9a97a41329f723055d4633f0b7"
-        }).AsSelf().SingleInstance();
+        }).As<IBraintreeGateway>().SingleInstance();
 
         builder.RegisterType<BrainTreePayments>().As<IPaymentSystem>()
             .SingleInstance();

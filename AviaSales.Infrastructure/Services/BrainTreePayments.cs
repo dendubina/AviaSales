@@ -6,9 +6,9 @@ namespace AviaSales.Infrastructure.Services;
 
 public class BrainTreePayments : IPaymentSystem
 {
-    private readonly BraintreeGateway _brainTreeGateway;
+    private readonly IBraintreeGateway _brainTreeGateway;
 
-    public BrainTreePayments(BraintreeGateway brainTreeGateway)
+    public BrainTreePayments(IBraintreeGateway brainTreeGateway)
     {
         _brainTreeGateway = brainTreeGateway;
     }
