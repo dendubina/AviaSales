@@ -3,13 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AviaSales.Api", "AviaSales.Api\AviaSales.Api.csproj", "{D7CE00CE-918D-447D-9513-146133291539}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AviaSales.Api", "AviaSales.Api\AviaSales.Api.csproj", "{D7CE00CE-918D-447D-9513-146133291539}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AviaSales.Domain", "AviaSales.Domain\AviaSales.Domain.csproj", "{228AE620-C4E4-4C0E-B977-6067CAFAB279}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AviaSales.Domain", "AviaSales.Domain\AviaSales.Domain.csproj", "{228AE620-C4E4-4C0E-B977-6067CAFAB279}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AviaSales.Application", "AviaSales.Application\AviaSales.Application.csproj", "{38DCC0BD-9350-4ABB-9F56-069633AE24AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AviaSales.Application", "AviaSales.Application\AviaSales.Application.csproj", "{38DCC0BD-9350-4ABB-9F56-069633AE24AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AviaSales.Infrastructure", "AviaSales.Infrastructure\AviaSales.Infrastructure.csproj", "{50B70906-A399-4D70-AD2B-AF5C85064F27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AviaSales.Infrastructure", "AviaSales.Infrastructure\AviaSales.Infrastructure.csproj", "{50B70906-A399-4D70-AD2B-AF5C85064F27}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C2AE078-8221-420A-9F6B-B9E211AF70D8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.UnitTests", "Tests\Application.UnitTests\Application.UnitTests.csproj", "{01804042-65DB-425E-892F-728EF8B4A5BF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.UnitTests", "Tests\Infrastructure.UnitTests\Infrastructure.UnitTests.csproj", "{DEAAC8EA-0E1D-488A-B7A8-B29E209AD276}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.IntegrationTests", "Tests\IntegrationTests\Application.IntegrationTests.csproj", "{809CDA71-52CC-4CA2-9206-4D1CB92599EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +41,26 @@ Global
 		{50B70906-A399-4D70-AD2B-AF5C85064F27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50B70906-A399-4D70-AD2B-AF5C85064F27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50B70906-A399-4D70-AD2B-AF5C85064F27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01804042-65DB-425E-892F-728EF8B4A5BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01804042-65DB-425E-892F-728EF8B4A5BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01804042-65DB-425E-892F-728EF8B4A5BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01804042-65DB-425E-892F-728EF8B4A5BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEAAC8EA-0E1D-488A-B7A8-B29E209AD276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEAAC8EA-0E1D-488A-B7A8-B29E209AD276}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEAAC8EA-0E1D-488A-B7A8-B29E209AD276}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEAAC8EA-0E1D-488A-B7A8-B29E209AD276}.Release|Any CPU.Build.0 = Release|Any CPU
+		{809CDA71-52CC-4CA2-9206-4D1CB92599EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{809CDA71-52CC-4CA2-9206-4D1CB92599EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{809CDA71-52CC-4CA2-9206-4D1CB92599EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{809CDA71-52CC-4CA2-9206-4D1CB92599EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{01804042-65DB-425E-892F-728EF8B4A5BF} = {5C2AE078-8221-420A-9F6B-B9E211AF70D8}
+		{DEAAC8EA-0E1D-488A-B7A8-B29E209AD276} = {5C2AE078-8221-420A-9F6B-B9E211AF70D8}
+		{809CDA71-52CC-4CA2-9206-4D1CB92599EB} = {5C2AE078-8221-420A-9F6B-B9E211AF70D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {44FD28FB-C928-43FD-8BD4-BF3746513E30}
